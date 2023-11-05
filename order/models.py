@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,6 +8,10 @@ import order
 
 
 class Order(models.Model):
+    class Meta:
+        verbose_name = 'Order'
+        verbose_name_plural = 'Orders'
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.FloatField()
     status = models.CharField(
@@ -27,6 +32,10 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    class Meta:
+        verbose_name = 'Order item'
+        verbose_name_plural = 'Order items'
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.CharField(max_length=255)
     id_product = models.PositiveIntegerField()
