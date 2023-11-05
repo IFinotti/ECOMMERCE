@@ -1,4 +1,3 @@
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -21,13 +20,14 @@ class Order(models.Model):
         ),
     )
 
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.CharField(max_length=255)
     id_product = models.PositiveIntegerField()
     variation = models.CharField(max_length=255)
     id_variation = models.PositiveIntegerField()
-    price=models.FloatField()
-    promotional_price = models.FloatField()
-    quantity = models
-    image=
+    price = models.FloatField()
+    promotional_price = models.FloatField(default=0)
+    quantity = models.PositiveIntegerField()
+    image = models.CharField(max_length=2000)
