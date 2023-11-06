@@ -64,5 +64,8 @@ class Profile(models.Model):
         if not cpf_calc(self.cpf):
             error_messages['cpf'] = 'Type a valid CPF'
 
-        if re.search(r'[^0-9]', self.cep):
+        if re.search(r'[^0-9]', self.cep) or len(self.cep) < 8:
             error_messages['cep'] = 'Type a valid CEP, without letters or symbols.'
+
+        if error_messages:
+            raise ValidationError(error_messages)
