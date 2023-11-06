@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ValidationError
+from utils.cpf_calc import cpf_calc
+import re
 # Create your models here.
 
 
@@ -56,4 +59,10 @@ class Profile(models.Model):
         return f'{self.user.first_name} {self.user.last_name}'
 
     def clean(self):
-        pass
+        error_messages = {}
+
+        if not cpf_calc(self.cpf):
+            error_messages['cpf'] = 'Type a valid CPF'
+
+        if re.search(r'[^0-9]', self.cep):
+            error_messages['cep'] = 'Type a valid CEP, without letters or symbols.'

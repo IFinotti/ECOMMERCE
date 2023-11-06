@@ -1,85 +1,39 @@
 import re
-print('------------------------')
-print('Bem vindo ao programa que calcula os dois últimos números do seu CPF!')
-print('------------------------')
-# cpf_enviado = "506.746.398-80" \
-#     .replace('.', '')\
-#     .replace(' ', '')\
-#     .replace('-', '')
 
-cpf_enviado = input('Digite seu CPF: ')
-cpf_enviado = re.sub(
-    r'[^0-9]', '',
-    cpf_enviado
-)
+def cpf_calc(cpf):
+    cpf = str(cpf)
+    cpf = re.sub(r'[^0-9]', '', cpf)
 
-nove_digitos = cpf_enviado[:9]
-contador = 10
-resultado = 0
+    if not cpf or len(cpf) != 11:
+        return False
 
-for digito in nove_digitos:
-    resultado += int(digito) * contador
-    contador -= 1
-    print(resultado)
+    novo_cpf = cpf[:-2]                 # Elimina os dois últimos digitos do CPF
+    reverso = 10                        # Contador reverso
+    total = 0
 
-# Multiplicar o resultado anterior por 10
-print('------------------------')
-print('Abaixo irei multiplicar o resultado anterior por 10:')
-multiplicar_10 = resultado * 10
-print(multiplicar_10)
+    # Loop do CPF
+    for index in range(19):
+        if index > 8:                   # Primeiro índice vai de 0 a 9,
+            index -= 9                  # São os 9 primeiros digitos do CPF
 
-# Obter o resto da divisão da conta anterior por 11
-print('------------------------')
-print('Esse é o primeiro número do seu CPF: ')
-digito_1 = multiplicar_10 % 11
+        total += int(novo_cpf[index]) * reverso  # Valor total da multiplicação
 
-# Última condição para encontrar o primeiro dígito
-if digito_1 > 9:
-    digito_1 = 0
-elif digito_1 <= 9:
-    digito_1 = digito_1
+        reverso -= 1                    # Decrementa o contador reverso
+        if reverso < 2:
+            reverso = 11
+            d = 11 - (total % 11)
 
-    print(digito_1)
+            if d > 9:                   # Se o digito for > que 9 o valor é 0
+                d = 0
+            total = 0                   # Zera o total
+            novo_cpf += str(d)          # Concatena o digito gerado no novo cpf
 
-"""
-Cálculo segundo digito: inserção do primeiro dígito na hora da multiplicação
-"""
+    # Evita sequencias. Ex.: 11111111111, 00000000000...
+    sequencia = novo_cpf == str(novo_cpf[0]) * len(cpf)
 
-print('-----------------------------')
-print('AGORA IREI CALCULAR O SEGUNDO NÚMERO DO CPF:')
-print('-----------------------------')
-dez_digitos = cpf_enviado[:10]
-contador_2 = 11
-resultado_2 = 0
-
-for digito in dez_digitos:
-    resultado_2 += int(digito) * contador_2
-    contador_2 -= 1
-    print(resultado_2)
-
-# Multiplicar o resultado anterior por 10
-print('------------------------')
-print('Abaixo irei multiplicar o resultado anterior por 10:')
-multiplicar_10 = resultado_2 * 10
-print(multiplicar_10)
-
-# Obter o resto da divisão da conta anterior por 11
-print('------------------------')
-print('Esse é o segundo número do seu CPF: ')
-digito_2 = multiplicar_10 % 11
-# Última condição para encontrar o segundo dígito
-if digito_2 > 9:
-    digito_2 = 0
-elif digito_2 <= 9:
-    digito_2 = digito_2
-
-print(digito_2)
-print('------------------------')
-
-cpf_calculado = f'{nove_digitos}{digito_1}{digito_2}'
-print(cpf_calculado)
-
-if cpf_enviado == cpf_calculado:
-    print(f'Seu CPF é válido.')
-else:
-    print('Seu CPF é inválido.')
+    # Descobri que sequências avaliavam como verdadeiro, então também
+    # adicionei essa checagem aqui
+    if cpf == novo_cpf and not sequencia:
+        return True
+    else:
+        return False
