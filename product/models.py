@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from PIL import Image
 import os
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -16,7 +17,7 @@ class Product(models.Model):
     long_description = models.TextField()
     image = models.ImageField(
         upload_to='product_images/%Y/%m', blank=True, null=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     marketing_price = models.FloatField()
     promotional_marketing_price = models.FloatField(default=0)
     type_of = models.CharField(
@@ -43,6 +44,9 @@ class Product(models.Model):
         new_img.save(img_full_path, optimize=True, quality=50)
 
     def save(self, *args, **kwargs):
+        if not self.slug:
+            slug = f'{slugify(self.name)}-{self.pk}'
+
         super().save(*args, **kwargs)
 
         max_img_size = 800
