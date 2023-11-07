@@ -30,6 +30,9 @@ class Product(models.Model):
         ),
     )
 
+    def formatted_price(self):
+        return f'R$ {self.marketing_price:.2f}'.replace('.', ',')
+
     @staticmethod  # <- there is no 'self' in the method
     def resize_image(img, new_width=800):
         img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
