@@ -1,4 +1,3 @@
-from ast import Add
 from django.urls import path
 from . import views
 
