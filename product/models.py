@@ -32,6 +32,12 @@ class Product(models.Model):
 
     def formatted_price(self):
         return f'R$ {self.marketing_price:.2f}'.replace('.', ',')
+    formatted_price.short_description = 'Price'  # <- this one is NOT my variable
+
+    def formatted_marketing_price(self):
+        return f'R$ {self.promotional_marketing_price:.2f}'.replace('.', ',')
+    # <- this one is NOT my variable
+    formatted_marketing_price.short_description = 'Marketing price'
 
     @staticmethod  # <- there is no 'self' in the method
     def resize_image(img, new_width=800):
