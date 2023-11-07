@@ -20,9 +20,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', include('product.urls')),
+    path('profiles/', include('profiles.urls')),
+    path('order/', include('order.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+# TODO: remove debug toolbar
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
