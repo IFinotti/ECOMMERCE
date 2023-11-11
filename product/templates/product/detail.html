@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% load omfilters %} {% block content %}
 <div class="row">
   <div class="col-lg">
     <div class="row no-gutters">
@@ -14,12 +14,18 @@
       <h1 class="h2">{{product.name}}</h1>
       <p class="lead">{{product.short_description}}</p>
       <p class="lead">
-        <span id="variation-preco" class="lead product-price">R$29,90</span>
-        <span
-          id="variation-preco-promocional"
-          class="lead product-old-price text-muted"
-          >R$49,90</span
+        {% if product.promotional_marketing_price %}
+        <span id="variation-preco-promocional" class="lead product-price"
+          >{{product.promotional_marketing_price|format_price}}</span
         >
+        <span id="variation-preco" class="lead product-old-price text-muted"
+          >{{product.marketing_price|format_price}}</span
+        >
+        {% else %}
+        <span id="variation-preco" class="lead product-price"
+          >{{product.marketing_price|format_price}}</span
+        >
+        {% endif %}
       </p>
 
       <form action="/addtocart/" id="form-add-to-cart">
@@ -29,27 +35,18 @@
             name="vid"
             class="form-control form-control-lg"
           >
+            {% for variation in product.variation_set.all %}
+            <!- disable-eslint -->
+            {% if variation.promotional_price %}
             <option
-              data-preco="R$ 59,90"
-              data-preco-promocional="R$ 39,90"
-              value="45"
+              data-preco="{{variation.price|format_price}}"
+              data-preco-promocional="{{variation.promotional_price|format_price}}"
+              value="{{variation.id}}"
             >
-              P
+              {{variation.name}} {% else %} {% endif %}
             </option>
-            <option
-              data-preco="R$ 51,90"
-              data-preco-promocional="R$ 49,90"
-              value="45"
-            >
-              M
-            </option>
-            <option
-              data-preco="R$ 52,90"
-              data-preco-promocional="R$ 89,90"
-              value="45"
-            >
-              G
-            </option>
+
+            {% endfor %}
           </select>
         </div>
 
@@ -60,6 +57,15 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="mt-5 mb-5">
+      <h2 class="text-center">{{product.name}}</h2>
+      {{product.long_description|linebreaks}}
     </div>
   </div>
 </div>
