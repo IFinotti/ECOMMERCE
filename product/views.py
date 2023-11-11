@@ -15,7 +15,7 @@ class ProductList(ListView):
 
 
 class ProductDetail(DetailView):
-    models = models.Product
+    model = models.Product
     template_name = 'product/detail.html'
     context_object_name = 'product'
     slug_url_kwarg = 'slug'
