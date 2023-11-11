@@ -43,10 +43,18 @@
               data-preco-promocional="{{variation.promotional_price|format_price}}"
               value="{{variation.id}}"
             >
-              {{variation.name}} {% else %} {% endif %}
+              {% if variation.name %} {{variation.name}} {% else %}
+              {{variation}} {% endif %}
+            </option>
+            {% else %}
+            <option
+              data-preco="{{variation.price|format_price}}"
+              value="{{variation.id}}"
+            >
+              {{variation}}
             </option>
 
-            {% endfor %}
+            {% endif %} {% endfor %}
           </select>
         </div>
 
