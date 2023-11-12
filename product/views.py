@@ -24,6 +24,11 @@ class ProductDetail(DetailView):
 
 class AddToCart(View):
     def get(self, *args, **kwargs):
+
+        # if self.request.session.get('cart'):
+        #     del self.request.session['cart']
+        #     self.request.session.save()
+
         http_referer = self.request.META.get(
             'HTTP_REFERER', reverse('product:list')
         )
@@ -67,8 +72,20 @@ class AddToCart(View):
 
         cart = self.request.session['cart']
         if variation_id in cart:
-            # TODO: variation exists in the cart
-            pass
+            # variation exists in the cart
+            cart_quantity = cart[variation_id]['quantity']
+            cart_quantity += 1
+
+            if variation_stock < cart_quantity:
+                messages.warning(
+                    self.request, f'Insufficient stock for {cart_quantity}x in {product_name}.'
+                    f'We add {variation_stock}x on your cart.'
+                )
+                cart_quantity = variation_stock
+
+            cart[variation_id]['quantity'] = cart_quantity
+            cart[variation_id]['quantitative_price'] = unit_price * cart_quantity
+            cart[variation_id]['promotional_quantitative_price'] = promotional_unit_price * cart_quantity
         else:
             # variation does not exist in the cart
             cart[variation_id] = {
