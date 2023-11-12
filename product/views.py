@@ -116,7 +116,7 @@ class RemoveFromCart(View):
 
 class Cart(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Cart')
+        return render(self.request, 'product/cart.html')
 
 
 class Finish(View):
