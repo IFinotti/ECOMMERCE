@@ -35,7 +35,29 @@ class AddToCart(View):
                 'This product does not exist.'
             )
             return redirect(http_referer)
+
         variation = get_object_or_404(models.Variation, id=variation_id)
+        product = variation.product
+
+        product_id = product.pk
+        product_name = product.name
+        variation_name = variation.name or ''
+        unit_price = variation.price
+        promotional_unit_price = variation.promotional_price
+        quantity = 1
+        slug = product.slug
+        image = product.image
+
+        if image:
+            image = image.name
+        else:
+            image = ''
+
+        if variation.stock < 1:
+            messages.error(
+                self.request, 'Insufficient stock'
+            )
+            return redirect(http_referer)
 
         # this 'if' statement check if a cart exists in a client account
         if not self.request.session.get('cart'):
@@ -48,7 +70,7 @@ class AddToCart(View):
             pass
         else:
             # TODO: variation does not exist in the cart
-            pass
+            cart[variation_id]
 
         return HttpResponse()
 
