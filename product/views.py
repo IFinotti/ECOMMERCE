@@ -37,6 +37,7 @@ class AddToCart(View):
             return redirect(http_referer)
 
         variation = get_object_or_404(models.Variation, id=variation_id)
+        variation_stock = variation.stock
         product = variation.product
 
         product_id = product.pk
@@ -69,8 +70,21 @@ class AddToCart(View):
             # TODO: variation exists in the cart
             pass
         else:
-            # TODO: variation does not exist in the cart
-            cart[variation_id]
+            # variation does not exist in the cart
+            cart[variation_id] = {
+                'product_id': product_id,
+                'product_name': product_name,
+                'variation_name': variation_name,
+                'unit_price': unit_price,
+                'promotional_unit_price': promotional_unit_price,
+                'quantitative_price': unit_price,
+                'promotional_quantitative_price': promotional_unit_price,
+                'quantity': 1,
+                'slug': slug,
+                'image': image,
+            }
+
+        self.request.session.save()
 
         return HttpResponse()
 
