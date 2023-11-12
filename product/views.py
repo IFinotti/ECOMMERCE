@@ -102,8 +102,11 @@ class AddToCart(View):
             }
 
         self.request.session.save()
+        messages.success(
+            self.request,
+            f'{product_name} {variation_name} has been added to your cart {cart[variation_id]["quantity"]}x')
 
-        return HttpResponse()
+        return redirect(http_referer)
 
 
 class RemoveFromCart(View):
