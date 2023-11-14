@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% if request.session.cart %}
+
 <div class="row mt-3">
   <div class="col">
     <h3>Carrinho de compras</h3>
@@ -14,23 +15,27 @@
           <th>Total</th>
         </tr>
 
+        {% for line in request.session.cart.values %}
         <tr>
           <td class="d-none d-lg-block">
-            <img
-              class="cart-img"
-              src="imgs/7eb9d706-b8e3-48d0-957e-25f4a722f944.jpg"
-            />
+            <img class="cart-img" src="" />
           </td>
           <td>
-            Nome do produto que o cliente está comprando
+            {{line.product_name}}
             <a class="ml-3" href="#">
               <i class="fas fa-times-circle text-danger" aria-hidden="true"></i>
             </a>
           </td>
-          <td>Variação</td>
-          <td>2x</td>
-          <td>R$ 10500,59</td>
+          <td>{{line.variation_name}}</td>
+          <td>{{line.quantity}}x</td>
+
+          {% if line.promotional_quantitative_price %}
+          <td>{{line.promotional_quantitative_price}}</td>
+          {% else %}
+          <td>{{line.quantitative_price}}</td>
+          {% endif %}
         </tr>
+        {% endfor %}
       </table>
     </div>
   </div>
@@ -55,4 +60,12 @@
     </a>
   </div>
 </div>
-{% endblock content %}
+{% else %}
+<div class="row mt-3">
+  <div class="col">
+    <h3>Empty cart.</h3>
+    <p class="lead">There is no products in your cart.</p>
+  </div>
+</div>
+
+{% endif %} {% endblock content %}
