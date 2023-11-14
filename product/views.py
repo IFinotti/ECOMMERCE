@@ -115,20 +115,21 @@ class RemoveFromCart(View):
             'HTTP_REFERER', reverse('product:list')
         )
         variation_id = self.request.GET.get('vid')
-    
+
         if not variation_id:
             return redirect(http_referer)
 
         if not self.request.session.get('cart'):
             return redirect(http_referer)
-        
-        if variation_id not in self.request.session['cart']
+
+        if variation_id not in self.request.session['cart']:
             return redirect(http_referer)
 
-        cart = self.request.session['cart']
+        cart = self.request.session['cart'][variation_id]
 
-        messages.success(self.request, f'Product {cart["product_name"]} {cart["variation_name"]} removed from your cart')
-        del self.request.session['cart']['variation_id']
+        messages.success(
+            self.request, f'Product {cart["product_name"]} {cart["variation_name"]} removed from your cart')
+        del self.request.session['cart'][variation_id]
 
         self.request.session.save()
         return redirect(http_referer)
