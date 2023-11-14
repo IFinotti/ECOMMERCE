@@ -10,5 +10,6 @@ def format_price(val):
     return utils.format_price(val)
 
 
+@register.filter
 def total_cart_qtt(cart):
     return utils.total_cart_qtt(cart)
