@@ -33,36 +33,6 @@
             </a>
             <p>Variation ID: {{ line.variation_id }}</p>
           </td>
-
-
-          {% for line in cart.values %}
-          <tr>
-            <td>
-              Product Name: {{ line.product_name }} <br>
-              Variation ID: {{ line.variation_id }}
-              <!-- Adicione este debug -->
-            </td>
-            <!-- Restante do seu código HTML -->
-          </tr>
-        {% endfor %}
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <td>{{line.variation_name}}</td>
           <td>
             {{line.quantity}}x 

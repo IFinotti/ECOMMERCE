@@ -99,6 +99,7 @@ class AddToCart(View):
                 'quantity': 1,
                 'slug': slug,
                 'image': image,
+                'variation_id': variation_id,
             }
 
         self.request.session.save()
