@@ -117,6 +117,10 @@ class RemoveFromCart(View):
         variation_id = self.request.GET.get('vid')
 
         if not variation_id:
+            print('Variation ID not found')  # Debug
+            return redirect(http_referer)
+
+        if not variation_id:
             return redirect(http_referer)
 
         if not self.request.session.get('cart'):
@@ -142,7 +146,11 @@ class RemoveFromCart(View):
 
 class Cart(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'product/cart.html')
+        context = {
+            'cart': self.request.session.get('cart', {}),
+        }
+
+        return render(self.request, 'product/cart.html', context)
 
 
 class Finish(View):

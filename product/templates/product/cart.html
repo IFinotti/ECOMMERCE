@@ -33,10 +33,48 @@
             </a>
             <p>Variation ID: {{ line.variation_id }}</p>
           </td>
+
+
+          {% for line in cart.values %}
+          <tr>
+            <td>
+              Product Name: {{ line.product_name }} <br>
+              Variation ID: {{ line.variation_id }}
+              <!-- Adicione este debug -->
+            </td>
+            <!-- Restante do seu código HTML -->
+          </tr>
+        {% endfor %}
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <td>{{line.variation_name}}</td>
           <td>
-            {{line.quantity}}x {% if line.promotional_unit_price %}
-            {{line.promotional_unit_price}} {% else %} {{line.unit_price}}
+            {{line.quantity}}x 
+            <!--disable-eslint-->
+            {% if line.promotional_unit_price %}
+            <!--disable-eslint-->
+            {{line.promotional_unit_price}} 
+            <!--disable-eslint-->
+            {% else %} 
+            <!--disable-eslint-->
+            {{line.unit_price}}
+            <!--disable-eslint-->
             {%endif %}
           </td>
 
