@@ -127,11 +127,16 @@ class RemoveFromCart(View):
 
         cart = self.request.session['cart'][variation_id]
 
+        print('Before deletion')  # Adiciona este log
+
         messages.success(
             self.request, f'Product {cart["product_name"]} {cart["variation_name"]} removed from your cart')
         del self.request.session['cart'][variation_id]
 
         self.request.session.save()
+
+        print('After deletion')  # Adiciona este log
+
         return redirect(http_referer)
 
 

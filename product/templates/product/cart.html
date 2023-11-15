@@ -1,4 +1,7 @@
-{% extends "base.html" %} {% load myfilters %} {% load static %}
+{% extends "base.html" %} 
+{% load myfilters %}
+<!--disable-eslint-->
+{% load static %}
 <!--disable-eslint-->
 {% block content %} {% if request.session.cart %}
 
@@ -24,9 +27,11 @@
           </td>
           <td>
             <a href="{% url "product:detail" line.slug %}"> {{line.product_name}} </a>
-            <a class="ml-3" href="{% url 'product:removefromcart' %}?vid={{line.variation_id}}">
+            <a class="ml-3" href="{% url "product:removefromcart" %}?vid={{line.variation_id}}">
               <i class="fas fa-times-circle text-danger" aria-hidden="true"></i>
+              <!-- Debug -->
             </a>
+            <p>Variation ID: {{ line.variation_id }}</p>
           </td>
           <td>{{line.variation_name}}</td>
           <td>
