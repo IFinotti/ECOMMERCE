@@ -11,7 +11,7 @@ class Pay(View):
         return HttpResponse('Pay')
 
 
-class FinishOrder(View):
+class SaveOrder(View):
     def get(self, *args, **kwargs):
         return HttpResponse('FinishOrder')
 

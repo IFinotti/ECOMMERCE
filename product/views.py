@@ -154,6 +154,6 @@ class Cart(View):
         return render(self.request, 'product/cart.html', context)
 
 
-class Finish(View):
+class PurchaseSummary(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Finish')
+        return HttpResponse('Summary')
