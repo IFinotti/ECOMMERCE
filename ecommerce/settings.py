@@ -56,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    'crispy_forms',
+
     # TODO: remove this
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
