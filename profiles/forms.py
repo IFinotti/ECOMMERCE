@@ -19,7 +19,7 @@ class UserForm(forms.ModelForm):
         cleaned = self.cleaned_data
 
 
-class PerfilForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = models.Profile
         fields = '__all__'
