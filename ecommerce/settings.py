@@ -42,10 +42,13 @@ INSTALLED_APPS = [
     'profiles',
     'order',
     'product',
+    'crispy_forms',
 
     # TODO: remove this
     'debug_toolbar',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +59,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'crispy_forms',
 
     # TODO: remove this
     'debug_toolbar.middleware.DebugToolbarMiddleware',

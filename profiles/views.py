@@ -25,7 +25,8 @@ class ProfileBase(View):
 
 
 class Create(ProfileBase):
-    pass
+    def post(self, *args, **kwargs):
+        return self.render
 
 
 class Update(View):
