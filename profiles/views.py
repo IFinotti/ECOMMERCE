@@ -13,10 +13,21 @@ class ProfileBase(View):
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
 
-        self.context = {
-            'userform': forms.UserForm(data=self.request.POST or None),
-            'profileform': forms.ProfileForm(data=self.request.POST or None)
-        }
+        if self.request.user.is_authenticated:
+            self.context = {
+                'userform': forms.UserForm(
+                    data=self.request.POST or None,
+                    user=self.request.user,
+                    instance=self.request.user,
+                ),
+
+                'profileform': forms.ProfileForm(data=self.request.POST or None)
+            }
+        else:
+            self.context = {
+                'userform': forms.UserForm(data=self.request.POST or None),
+                'profileform': forms.ProfileForm(data=self.request.POST or None)
+            }
 
         self.render = render(self.request, self.template_name, self.context)
 

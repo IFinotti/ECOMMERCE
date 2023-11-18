@@ -1,9 +1,18 @@
 from django import forms
+from pkg_resources import require
 from . import models
 from django.contrib.auth.models import User
 
 
 class UserForm(forms.ModelForm):
+    password = forms.CharField(required=False, widget=forms.PasswordInput())
+    # to hide the password on the form
+
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.user = user
+
     class Meta:
         model = User
         fields = (
