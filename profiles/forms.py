@@ -1,3 +1,4 @@
+import email
 from django import forms
 from pkg_resources import require
 from . import models
@@ -33,12 +34,34 @@ class UserForm(forms.ModelForm):
         validation_error_msgs = {}
         user_data = cleaned.get('username')
         password_data = cleaned.get('password')
+        password2_data = cleaned.get('password2')
         email_data = cleaned.get('email')
 
         user_db = User.objects.filter(username=user_data).first()
+        email_db = User.objects.filter(email=email_data).first()
+
+        error_msg_user_exists = 'User already exists'
+        error_msg_email_exists = 'E-mail already exists'
+        error_msg_password_match = 'The passwords are not the same'
+        error_msg_short_password = 'E-mail already exists'
 
         if self.user:
-            pass
+            if user_data != user_db.username:
+                if user_db:
+                    validation_error_msgs['username'] = error_msg_user_exists
+
+            if password_data:
+                if password_data != password2_data:
+                    validation_error_msgs['password'] = error_msg_password_match
+                    validation_error_msgs['password2'] = error_msg_password_match
+
+                if len(password2_data) < 8:
+                    validation_error_msgs['password'] = error_msg_short_password
+
+            if email_data != email_db.email:
+                if email_db:
+                    validation_error_msgs['email'] = error_msg_email_exists
+
         else:
             pass
 
