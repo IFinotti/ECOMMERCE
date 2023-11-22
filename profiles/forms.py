@@ -44,6 +44,7 @@ class UserForm(forms.ModelForm):
         error_msg_email_exists = 'E-mail already exists'
         error_msg_password_match = 'The passwords are not the same'
         error_msg_short_password = 'E-mail already exists'
+        error_msg_required_field = 'This field is required'
 
         if self.user:
             if user_db:
@@ -63,7 +64,24 @@ class UserForm(forms.ModelForm):
                     validation_error_msgs['email'] = error_msg_email_exists
 
         else:
-            pass
+            if user_data != user_db.username:
+                validation_error_msgs['username'] = error_msg_user_exists
+
+            if password_data != password2_data:
+                validation_error_msgs['password'] = error_msg_password_match
+                validation_error_msgs['password2'] = error_msg_password_match
+
+            if len(password2_data) < 8:
+                validation_error_msgs['password'] = error_msg_short_password
+
+            if not password_data:
+                validation_error_msgs['password'] = error_msg_required_field
+
+            if not password_data2:
+                validation_error_msgs['password2'] = error_msg_required_field
+
+            if email_data != email_db.email:
+                validation_error_msgs['email'] = error_msg_email_exists
 
         if validation_error_msgs:
             raise (forms.ValidationError(validation_error_msgs))
