@@ -12,7 +12,7 @@
   <div class="col-lg">
     <h1>Cadastro</h1>
     <form method="POST" action="">
-      {% csrf_token %} {{userform|crispy}}
+      {% csrf_token %} {{userform|crispy}} {{profileform|crispy}}
       <div class="row">
         <div class="col">
           <button type="submit" class="btn btn-primary btn-block btn-lg">

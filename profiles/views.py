@@ -1,3 +1,4 @@
+import profile
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.views import View
@@ -13,7 +14,12 @@ class ProfileBase(View):
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
 
+        self.profile = None
+
         if self.request.user.is_authenticated:
+            self.profile = models.Profile.objects.filter(
+                user=self.request.user).first()
+
             self.context = {
                 'userform': forms.UserForm(
                     data=self.request.POST or None,
@@ -29,6 +35,9 @@ class ProfileBase(View):
                 'profileform': forms.ProfileForm(data=self.request.POST or None)
             }
 
+        self.userform = self.context['userform']
+        self.profileform = self.context['profileform']
+
         self.render = render(self.request, self.template_name, self.context)
 
     def get(self, *args, **kwargs):
@@ -37,6 +46,8 @@ class ProfileBase(View):
 
 class Create(ProfileBase):
     def post(self, *args, **kwargs):
+        if not self.userform.is_valid() or not self.profileform.is_valid():
+            pass
         return self.render
 
 
