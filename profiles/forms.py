@@ -6,7 +6,10 @@ from django.contrib.auth.models import User
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(required=False, widget=forms.PasswordInput())
+    password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(),
+    )
     # to hide the password on the form
 
     password2 = forms.CharField(
@@ -64,7 +67,7 @@ class UserForm(forms.ModelForm):
                     validation_error_msgs['email'] = error_msg_email_exists
 
         else:
-            if user_data != user_db.username:
+            if user_db:
                 validation_error_msgs['username'] = error_msg_user_exists
 
             if password_data != password2_data:
@@ -77,10 +80,10 @@ class UserForm(forms.ModelForm):
             if not password_data:
                 validation_error_msgs['password'] = error_msg_required_field
 
-            if not password_data2:
+            if not password2_data:
                 validation_error_msgs['password2'] = error_msg_required_field
 
-            if email_data != email_db.email:
+            if email_db:
                 validation_error_msgs['email'] = error_msg_email_exists
 
         if validation_error_msgs:
