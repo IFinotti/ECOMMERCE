@@ -1,11 +1,11 @@
-from pickle import FALSE
-import profile
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from django.views.generic import ListView
-from django.views import View
 from django.http import HttpResponse
+from django.views import View
 from . import models
 from . import forms
+import copy
 # Create your views here.
 
 
@@ -16,6 +16,7 @@ class ProfileBase(View):
         super().setup(*args, **kwargs)
 
         self.profile = None
+        self.cart = copy.deepcopy(self.request.session.get('cart', {}))
 
         if self.request.user.is_authenticated:
             self.profile = models.Profile.objects.filter(
@@ -59,7 +60,7 @@ class Create(ProfileBase):
 
         # user logged in
         if self.request.user.is_authenticated:
-            user = self.request.user
+            user = get_object_or_404(User, username=self.request.user.username)
             user.username = username
 
             if password:
@@ -79,6 +80,8 @@ class Create(ProfileBase):
             profile.user = user
             profile.save()
 
+        self.request.session['cart'] = self.cart
+        self.request.session.save()
         return self.render
 
 
