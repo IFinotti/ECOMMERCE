@@ -1,3 +1,4 @@
+from pickle import FALSE
 import profile
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -47,7 +48,24 @@ class ProfileBase(View):
 class Create(ProfileBase):
     def post(self, *args, **kwargs):
         if not self.userform.is_valid() or not self.profileform.is_valid():
+            return self.render
+
+        username = self.userform.cleaned_data.get('username')
+        password = self.userform.cleaned_data.get('password')
+        email = self.userform.cleaned_data.get('email')
+
+        # user logged in
+        if self.request.user.is_authenticated:
             pass
+        else:
+            user = self.userform.save(commit=False)
+            user.set_password(password)
+            user.save()
+
+            profile = self.profileform.save(commit=False)
+            profile.user = user
+            profile.save()
+
         return self.render
 
 
