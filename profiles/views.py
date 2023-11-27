@@ -1,3 +1,4 @@
+from cgi import print_form
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.views.generic import ListView
@@ -30,7 +31,10 @@ class ProfileBase(View):
                     instance=self.request.user,
                 ),
 
-                'profileform': forms.ProfileForm(data=self.request.POST or None)
+                'profileform': forms.ProfileForm(
+                    data=self.request.POST or None,
+                    instance=self.profile
+                )
             }
         else:
             self.context = {
@@ -41,6 +45,8 @@ class ProfileBase(View):
         self.userform = self.context['userform']
         self.profileform = self.context['profileform']
 
+        if self.request.user.is_authenticated:
+            self.template_name = 'profile/update.html'
         self.render = render(self.request, self.template_name, self.context)
 
     def get(self, *args, **kwargs):
@@ -71,6 +77,15 @@ class Create(ProfileBase):
             user.first_name = first_name
             user.last_name = last_name
             user.save()
+
+            if not self.profile:
+                self.profileform.cleaned_data['user'] = user
+                profile = models.Profile(**self.profileform.cleaned_data)
+                profile.save()
+            else:
+                self.profileform.save(commit=False)
+                profile.user = user
+                profile.save()
 
         else:
             user = self.userform.save(commit=False)
