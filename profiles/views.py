@@ -6,6 +6,7 @@ from django.views import View
 from . import models
 from . import forms
 import copy
+from django.contrib.auth import authenticate, login
 # Create your views here.
 
 
@@ -79,6 +80,13 @@ class Create(ProfileBase):
             profile = self.profileform.save(commit=False)
             profile.user = user
             profile.save()
+
+        if password:
+            authentic = authenticate(
+                self.request, username=user, password=password)
+
+            if authentic:
+                login(self.request, user=user)
 
         self.request.session['cart'] = self.cart
         self.request.session.save()
