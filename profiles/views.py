@@ -1,13 +1,13 @@
-from cgi import print_form
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 from django.http import HttpResponse
+from django.contrib import messages
 from django.views import View
 from . import models
 from . import forms
 import copy
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
 
@@ -55,8 +55,8 @@ class ProfileBase(View):
 
 class Create(ProfileBase):
     def post(self, *args, **kwargs):
-        # if not self.userform.is_valid() or not self.profileform.is_valid():
-        if not self.userform.is_valid():
+        # if not self.userform.is_valid():
+        if not self.userform.is_valid() !Wor not self.profileform.is_valid():
             return self.render
 
         username = self.userform.cleaned_data.get('username')
@@ -105,7 +105,10 @@ class Create(ProfileBase):
 
         self.request.session['cart'] = self.cart
         self.request.session.save()
-        return self.render
+
+        messages.success(
+            self.request, 'Your details are created/updated successfully')
+        return redirect('profile:create')
 
 
 class Update(View):
@@ -114,7 +117,7 @@ class Update(View):
 
 
 class Login(View):
-    def get(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         return HttpResponse('Login')
 
 
