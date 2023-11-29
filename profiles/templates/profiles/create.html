@@ -12,6 +12,7 @@
     <p>If you already have an account, make login below.</p>
 
     <form method="POST" action="{% url 'profile:login' %}">
+      {% csrf_token %}
       <div class="form-group">
         <label for="InputUser1">User</label>
         <input

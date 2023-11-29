@@ -113,9 +113,28 @@ class Create(ProfileBase):
 
 class Update(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Update')
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
 
+        if not username or not password:
+            messages.error(
+            self.request, 'Invalid user or passwords')
 
+            return redirect('profile:create')
+        
+        user = authenticate(self.request, username=username, password=password)
+
+        if not user:
+            messages.error(
+            self.request, 'Invalid user or passwords')
+            return redirect('profile:create')
+
+        login(self.request, user=user)
+        messages.success(
+            self.request, 'You have succesfully logged in')
+        return redirect('product:cart')
+
+        return HttpResponse('hi')
 class Login(View):
     def post(self, *args, **kwargs):
         return HttpResponse('Login')
@@ -123,4 +142,8 @@ class Login(View):
 
 class Logout(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Logout')
+        cart = copy.deepcopy(self.request.session.get('cart'))
+        logout(self.request)
+        self.request.session['cart']=cart 
+        self.request.session.save()
+        return redirect('product:list')
