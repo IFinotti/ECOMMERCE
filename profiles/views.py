@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 
 
 class ProfileBase(View):
-    template_name = 'profile/create.html'
+    template_name = 'profiles/create.html'
 
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
@@ -46,7 +46,7 @@ class ProfileBase(View):
         self.profileform = self.context['profileform']
 
         if self.request.user.is_authenticated:
-            self.template_name = 'profile/update.html'
+            self.template_name = 'profiles/update.html'
         self.render = render(self.request, self.template_name, self.context)
 
     def get(self, *args, **kwargs):
@@ -108,7 +108,7 @@ class Create(ProfileBase):
 
         messages.success(
             self.request, 'Your details are created/updated successfully')
-        return redirect('profile:create')
+        return redirect('profiles:create')
 
 
 class Update(View):
