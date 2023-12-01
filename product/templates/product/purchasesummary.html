@@ -7,7 +7,7 @@
     <h2>Resumo da sua compra</h2>
 
     <p class="lead">Dados do usuário</p>
-    <p>Caso precise editar, <a href="/userprofile/update/">clique aqui</a></p>
+    <p>Caso precise editar, <a href="{% url "profiles:create" %}">clique aqui</a></p>
     <dl class="row">
       <dt class="col-lg-2">Nome:</dt>
       <dd class="col-lg-4">{{user.first_name}}</dd>
@@ -26,7 +26,7 @@
     </dl>
 
     <p class="lead">Dados de endereço</p>
-    <p>Caso precise editar, <a href="#">clique aqui</a></p>
+    <p>Caso precise editar, <a href="{% url "profiles:create" %}">clique aqui</a></p>
     <dl class="row">
       <dt class="col-lg-2">Endereço:</dt>
       <dd class="col-lg-4">{{user.profiles.address}}</dd>
@@ -36,15 +36,15 @@
       <dt class="col-lg-2">Complemento:</dt>
       <dd class="col-lg-4">{{user.profiles.complement}}</dd>
       <dt class="col-lg-2">Nascimento:</dt>
-      <dd class="col-lg-4">Centro</dd>
+      <dd class="col-lg-4">{{user.profiles.hood}}</dd>
 
       <dt class="col-lg-2">Cidade:</dt>
-      <dd class="col-lg-4">São Paulo</dd>
+      <dd class="col-lg-4">{{user.profiles.city}}</dd>
       <dt class="col-lg-2">Estado:</dt>
-      <dd class="col-lg-4">SP</dd>
+      <dd class="col-lg-4">{{user.profiles.state}}</dd>
 
       <dt class="col-lg-2">CEP:</dt>
-      <dd class="col-lg-4">00000000</dd>
+      <dd class="col-lg-4">{{user.profiles.cep}}</dd>
     </dl>
   </div>
 </div>
