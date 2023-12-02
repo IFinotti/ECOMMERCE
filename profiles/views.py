@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 from django.http import HttpResponse
@@ -7,7 +8,6 @@ from django.views import View
 from . import models
 from . import forms
 import copy
-from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
 
@@ -57,6 +57,8 @@ class Create(ProfileBase):
     def post(self, *args, **kwargs):
         # if not self.userform.is_valid():
         if not self.userform.is_valid() or not self.profileform.is_valid():
+            messages.error(
+                self.request, "There's some errors in your register. Check that the fields have been filled correctly.")
             return self.render
 
         username = self.userform.cleaned_data.get('username')
@@ -108,7 +110,7 @@ class Create(ProfileBase):
 
         messages.success(
             self.request, 'Your details are created/updated successfully')
-        return redirect('profiles:create')
+        return redirect('product:cart')
 
 
 class Update(View):
