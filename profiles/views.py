@@ -17,8 +17,8 @@ class ProfileBase(View):
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
 
-        self.profile = None
         self.cart = copy.deepcopy(self.request.session.get('cart', {}))
+        self.profile = None
 
         if self.request.user.is_authenticated:
             self.profile = models.Profile.objects.filter(
@@ -135,8 +135,6 @@ class Update(View):
         messages.success(
             self.request, 'You have succesfully logged in')
         return redirect('product:cart')
-
-        return HttpResponse('hi')
 
 
 class Login(View):
