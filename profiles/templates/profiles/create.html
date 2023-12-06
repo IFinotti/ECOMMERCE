@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load static %}
 <!--disable-eslint-->
 {% load crispy_forms_tags %}
 <!--disable-eslint-->
@@ -49,9 +49,9 @@
     <form method="POST" action="">
       {% csrf_token %}
       <!--disable-eslint-->
-      {{userform|crispy}}
+      {{userform.as_p}}
       <!--disable-eslint-->
-      {{profileform|crispy}}
+      {{profileform.as_p}}
       <!--disable-eslint-->
       <div class="row">
         <div class="col">

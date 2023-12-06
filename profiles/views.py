@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.models import User
 from django.views.generic import ListView
-from django.http import HttpResponse
 from django.contrib import messages
 from django.views import View
 from . import models
@@ -85,7 +85,7 @@ class Create(ProfileBase):
                 profile = models.Profile(**self.profileform.cleaned_data)
                 profile.save()
             else:
-                self.profileform.save(commit=False)
+                profile = self.profileform.save(commit=False)
                 profile.user = user
                 profile.save()
 
@@ -115,6 +115,11 @@ class Create(ProfileBase):
 
 class Update(View):
     def get(self, *args, **kwargs):
+        return HttpRequest(*args, **kwargs)
+
+
+class Login(View):
+    def post(self, *args, **kwargs):
         username = self.request.POST.get('username')
         password = self.request.POST.get('password')
 
@@ -122,24 +127,19 @@ class Update(View):
             messages.error(
                 self.request, 'Invalid user or passwords')
 
-            return redirect('profile:create')
+            return redirect('profiles:create')
 
         user = authenticate(self.request, username=username, password=password)
 
         if not user:
             messages.error(
                 self.request, 'Invalid user or passwords')
-            return redirect('profile:create')
+            return redirect('profiles:create')
 
         login(self.request, user=user)
         messages.success(
             self.request, 'You have succesfully logged in')
         return redirect('product:cart')
-
-
-class Login(View):
-    def post(self, *args, **kwargs):
-        return HttpResponse('Login')
 
 
 class Logout(View):
