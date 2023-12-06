@@ -5,6 +5,7 @@ from django.views import View
 from django.contrib import messages
 from django.http import HttpResponse
 from . import models
+from profiles.models import Profile
 # Create your views here.
 
 
@@ -158,6 +159,17 @@ class PurchaseSummary(View):
     def get(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return redirect('profiles:create')
+
+        profile = Profile.objects.filter(user=self.request.user).exists()
+
+        if not profile:
+            messages.error(self.request, 'User does not have a profile.')
+            return redirect('profiles:create')
+
+        if not self.request.session.get('cart'):
+            messages.error(self.request, 'Empty cart.')
+
+            return redirect('product:list')
 
         context = {
             'user': self.request.user,
