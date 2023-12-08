@@ -1,3 +1,4 @@
+from os import error
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.http import HttpResponse
@@ -23,7 +24,32 @@ class Pay(View):
         cart = self.request.session.get('cart')
         cart_variation_id = [v for v in cart]
         bd_variations = list(
-            Variation.objects.filter(id__in=cart_variation_id))
+            Variation.objects.select_related('product').filter(id__in=cart_variation_id))
+
+        for variation in bd_variations:
+            vid = str(variation.id)
+            stock = variation.stock
+            qtt_cart = cart[vid]['quantity']
+            unit_price = cart[vid]['unit_price']
+            promotional_unit_price = cart[vid]['promotional_unit_price']
+
+            error_stock = ''
+
+            if stock < qtt_cart:
+                cart[vid]['quantity'] = stock
+                cart[vid]['quantitative_price'] = stock * unit_price
+                cart[vid]['promotional_quantitative_price'] = stock * \
+                    promotional_unit_price
+
+                error_stock = 'Your cart contains products that are out of stock. \
+                      Please verify on your cart which products are affected by it.'
+
+            if error_stock:
+                messages.error(
+                    self.request, error_stock)
+                self.request.session.save()
+                return redirect('product:cart')
+
         context = {}
         return redirect(self.request, self.template_name, context)
 
