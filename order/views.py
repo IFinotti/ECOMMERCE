@@ -54,6 +54,22 @@ class Pay(View):
                 self.request.session.save()
                 return redirect('product:cart')
 
+            order = Order(
+                user=self.request.user,
+                total=total_price_cart,
+                total_qtt=total_qtt_cart,
+                stats='C',
+            )
+
+            # Instead of saving each instance separately, bulk_create performs \
+            # a batch insert into the database, reducing the number of queries executed. \
+            # It's particularly useful when you have a large number of objects to create, as it can \
+            # significantly improve performance compared to saving them one by one.
+
+            OrderItem.objects.bulk_create(
+                []
+            )
+
         context = {}
         return redirect(self.request, self.template_name, context)
 
