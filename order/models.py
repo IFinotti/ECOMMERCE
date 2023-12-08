@@ -13,7 +13,8 @@ class Order(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.FloatField()
-    status = models.CharField(
+    total_qtt = models.PositiveIntegerField()
+    stats = models.CharField(
         default="C",
         max_length=1,
         choices=(

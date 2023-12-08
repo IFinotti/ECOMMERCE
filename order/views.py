@@ -1,10 +1,11 @@
-from os import error
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
-from django.http import HttpResponse
 from product.models import Variation
+from django.http import HttpResponse
 from django.contrib import messages
 from django.views import View
+from utils import utils
+from .models import Order, OrderItem
 
 # Create your views here.
 
@@ -43,6 +44,9 @@ class Pay(View):
 
                 error_stock = 'Your cart contains products that are out of stock. \
                       Please verify on your cart which products are affected by it.'
+
+            total_qtt_cart = utils.total_cart_qtt(cart)
+            total_price_cart = utils.cart_total_price(cart)
 
             if error_stock:
                 messages.error(
