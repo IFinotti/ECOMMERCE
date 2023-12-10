@@ -85,8 +85,9 @@ class Pay(View):
                 ]
             )
 
-        context = {}
-        return redirect(self.request, self.template_name, context)
+            del self.request.session['cart']
+            # return render(self.request, self.template_name)
+            return redirect('order:list')
 
 
 class SaveOrder(View):
@@ -97,3 +98,8 @@ class SaveOrder(View):
 class Detail(View):
     def get(self, *args, **kwargs):
         return HttpResponse('Detail')
+
+
+class List(View):
+    def get(self, *args, **kwargs):
+        return HttpResponse('List')
