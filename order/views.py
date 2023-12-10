@@ -61,13 +61,28 @@ class Pay(View):
                 stats='C',
             )
 
+            order.save()
+
             # Instead of saving each instance separately, bulk_create performs \
             # a batch insert into the database, reducing the number of queries executed. \
             # It's particularly useful when you have a large number of objects to create, as it can \
             # significantly improve performance compared to saving them one by one.
 
             OrderItem.objects.bulk_create(
-                []
+                [
+                    OrderItem(
+                        order=order,
+                        product=v['product_name'],
+                        product_id=v['product_id'],
+                        variation=v['variation_name'],
+                        variation_id=v['variation_id'],
+                        price=v['quantitative_price'],
+                        promotional_price=v['promotional_quantitative_price'],
+                        quantity=v['quantity'],
+                        image=v['image'],
+
+                    ) for v in cart.values()
+                ]
             )
 
         context = {}
