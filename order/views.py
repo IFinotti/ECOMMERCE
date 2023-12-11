@@ -1,5 +1,7 @@
+from ast import Or
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.urls import reverse
+from django.views.generic import ListView, DetailView
 from product.models import Variation
 from django.http import HttpResponse
 from django.contrib import messages
@@ -10,7 +12,12 @@ from .models import Order, OrderItem
 # Create your views here.
 
 
-class Pay(View):
+class Pay(DetailView):
+    template_name = 'order/pay.html'
+    model = Order
+    pk_url_kwarg = 'pk'
+    context_object_name = 'order'
+
     def get(self, *args, **kwargs):
         return HttpResponse('Pay')
 
@@ -92,7 +99,14 @@ class SaveOrder(View):
 
             del self.request.session['cart']
             # return render(self.request, self.template_name)
-            return redirect('order:list')
+            return redirect(
+                reverse(
+                    'order:pay',
+                    kwargs={
+                        'pk': order.pk
+                    }
+                )
+            )
 
 
 class Detail(View):
