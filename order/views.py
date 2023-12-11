@@ -6,6 +6,7 @@ from product.models import Variation
 from django.http import HttpResponse
 from django.contrib import messages
 from django.views import View
+from symbol import arglist
 from utils import utils
 from .models import Order, OrderItem
 
@@ -25,8 +26,10 @@ class Pay(DispatchLoginRequired, DetailView):
     pk_url_kwarg = 'pk'
     context_object_name = 'order'
 
-    def get(self, *args, **kwargs):
-        return HttpResponse('Pay')
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(user=self.request.user)
+        return qs
 
 
 class SaveOrder(View):
