@@ -11,6 +11,11 @@ from .models import Order, OrderItem
 
 
 class Pay(View):
+    def get(self, *args, **kwargs):
+        return HttpResponse('Pay')
+
+
+class SaveOrder(View):
     template_name = 'order/pay.html'
 
     def get(self, *args, **kwargs):
@@ -88,11 +93,6 @@ class Pay(View):
             del self.request.session['cart']
             # return render(self.request, self.template_name)
             return redirect('order:list')
-
-
-class SaveOrder(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('FinishOrder')
 
 
 class Detail(View):
