@@ -13,14 +13,14 @@ from .models import Order, OrderItem
 # Create your views here.
 
 
-class DispatchLoginRequired(View):
+class DispatchLoginRequiredMixin(View):
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return redirect('profiles:create')
         return super().dispatch(*args, **kwargs)
 
 
-class Pay(DispatchLoginRequired, DetailView):
+class Pay(DispatchLoginRequiredMixin, DetailView):
     template_name = 'order/pay.html'
     model = Order
     pk_url_kwarg = 'pk'
@@ -124,6 +124,9 @@ class Detail(View):
         return HttpResponse('Detail')
 
 
-class List(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('List')
+class List(DispatchLoginRequiredMixin, ListView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'order/list.html'
+    paginate_by = 10
+    
