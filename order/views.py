@@ -17,17 +17,17 @@ class DispatchLoginRequiredMixin(View):
             return redirect('profiles:create')
         return super().dispatch(*args, **kwargs)
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(user=self.request.user)
+        return qs
+
 
 class Pay(DispatchLoginRequiredMixin, DetailView):
     template_name = 'order/pay.html'
     model = Order
     pk_url_kwarg = 'pk'
     context_object_name = 'order'
-
-    def get_queryset(self, *args, **kwargs):
-        qs = super().get_queryset(*args, **kwargs)
-        qs = qs.filter(user=self.request.user)
-        return qs
 
 
 class SaveOrder(View):
@@ -49,6 +49,7 @@ class SaveOrder(View):
 
         for variation in bd_variations:
             vid = str(variation.id)
+
             stock = variation.stock
             qtt_cart = cart[vid]['quantity']
             unit_price = cart[vid]['unit_price']
@@ -65,20 +66,20 @@ class SaveOrder(View):
                 error_stock = 'Your cart contains products that are out of stock. \
                       Please verify on your cart which products are affected by it.'
 
-            total_qtt_cart = utils.total_cart_qtt(cart)
-            total_price_cart = utils.cart_total_price(cart)
-
             if error_stock:
                 messages.error(
                     self.request, error_stock)
                 self.request.session.save()
                 return redirect('product:cart')
 
+            total_qtt_cart = utils.total_cart_qtt(cart)
+            total_price_cart = utils.cart_total_price(cart)
+
             order = Order(
                 user=self.request.user,
                 total=total_price_cart,
                 total_qtt=total_qtt_cart,
-                stats='C',
+                status='C',
             )
 
             order.save()
@@ -93,9 +94,9 @@ class SaveOrder(View):
                     OrderItem(
                         order=order,
                         product=v['product_name'],
-                        product_id=v['product_id'],
+                        id_product=v['product_id'],
                         variation=v['variation_name'],
-                        variation_id=v['variation_id'],
+                        id_variation=v['variation_id'],
                         price=v['quantitative_price'],
                         promotional_price=v['promotional_quantitative_price'],
                         quantity=v['quantity'],

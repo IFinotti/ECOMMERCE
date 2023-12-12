@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-import order
-
 # Create your models here.
 
 
@@ -14,7 +12,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.FloatField()
     total_qtt = models.PositiveIntegerField()
-    stats = models.CharField(
+    status = models.CharField(
         default="C",
         max_length=1,
         choices=(
