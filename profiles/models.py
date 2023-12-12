@@ -61,6 +61,16 @@ class Profile(models.Model):
     def clean(self):
         error_messages = {}
 
+        cpf_sent = self.cpf or None
+        cpf_saved = None
+        profile = Profile.objects.filter(cpf=cpf_sent).first()
+
+        if profile:
+            cpf_saved = profile.cpf
+            # if the pk of cpf_saved belongs to the profile, if it's different, the cpf is from another user
+            if cpf_saved is not None and self.pk != profile.pk:
+                error_messages['cpf'] = 'CPF already exists.'
+
         if not cpf_calc(self.cpf):
             error_messages['cpf'] = 'Type a valid CPF'
 
