@@ -43,9 +43,6 @@ INSTALLED_APPS = [
     'order',
     'product',
     'crispy_forms',
-
-    # TODO: remove this
-    'debug_toolbar',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -59,9 +56,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-
-    # TODO: remove this
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
@@ -160,10 +154,3 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 SESSION_SAVE_EVERY_REQUEST = False
 # Serializer - Padrão JSON
 # SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-
-# TODO: remove this
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
