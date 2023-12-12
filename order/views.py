@@ -117,9 +117,11 @@ class SaveOrder(View):
             )
 
 
-class Detail(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Detail')
+class Detail(DispatchLoginRequiredMixin, DetailView):
+    model = Order
+    context_object_name = 'order'
+    template_name = 'order/detail.html'
+    pk_url_kwarg = 'pk'
 
 
 class List(DispatchLoginRequiredMixin, ListView):
