@@ -1,14 +1,12 @@
-from ast import Or
-from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views.generic import ListView, DetailView
+from django.shortcuts import render, redirect
 from product.models import Variation
+from .models import Order, OrderItem
 from django.http import HttpResponse
 from django.contrib import messages
+from django.urls import reverse
 from django.views import View
-from symbol import arglist
 from utils import utils
-from .models import Order, OrderItem
 
 # Create your views here.
 
@@ -129,4 +127,3 @@ class List(DispatchLoginRequiredMixin, ListView):
     context_object_name = 'orders'
     template_name = 'order/list.html'
     paginate_by = 10
-    
