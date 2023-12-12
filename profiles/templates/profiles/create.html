@@ -2,8 +2,7 @@
 <!--disable-eslint-->
 {% load crispy_forms_tags %}
 <!--disable-eslint-->
-
-{% block content %}
+{% block title %}Create profile | {% endblock title %} {% block content %}
 
 <div class="row">
   {% if not request.user.is_authenticated %}

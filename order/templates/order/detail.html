@@ -1,2 +1,11 @@
-{% extends "base.html" %} {% block content %} {% load myfilters %} {% load
-static %} {% include "partials/_order.html" %} {% endblock content %}
+{% extends "base.html" %} {% load myfilters %}
+<!--disable-eslint-->
+{% loadstatic %}
+<!--disable-eslint-->
+{% block title %}{{order}} | {% endblock title %}
+<!--disable-eslint-->
+{% block content %}
+<!--disable-eslint-->
+{% include "partials/_order.html" %}
+<!--disable-eslint-->
+{% endblock content %}
