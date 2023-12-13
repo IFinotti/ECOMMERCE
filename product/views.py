@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404  # type:ignore
-from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views import View
-from django.contrib import messages
-from django.http import HttpResponse
-from . import models
+from django.views.generic.list import ListView
 from profiles.models import Profile
+from django.contrib import messages
+from django.db.models import Q
+from django.views import View
+from . import models
 # Create your views here.
 
 
@@ -22,6 +22,25 @@ class ProductDetail(DetailView):
     template_name = 'product/detail.html'
     context_object_name = 'product'
     slug_url_kwarg = 'slug'
+
+
+class Search(ProductList):
+    def get_queryset(self, *args, **kwargs):
+        termo = self.request.GET.get('termo')
+        qs = super().get_queryset(*args, **kwargs)
+
+        if not termo:
+            return qs
+
+        self.request.session['termo'] = termo
+
+        qs = qs.filter(
+            Q(name__icontains=self.request.session['termo']) |
+            Q(short_description__icontains=self.request.session['termo']) |
+            Q(long_description__icontains=self.request.session['termo']) |
+        )
+
+        return qs
 
 
 class AddToCart(View):

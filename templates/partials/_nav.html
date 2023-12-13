@@ -57,8 +57,10 @@
       </li>
       {% endif %}
     </ul>
-    <form class="form-inline my-2 my-lg-0">
+    <form class="form-inline my-2 my-lg-0" action="{% url 'product:search' %}">
       <input
+        name="termo"
+        value="{{request.GET.termo}}"
         class="form-control mr-sm-2"
         type="search"
         placeholder="Search"
