@@ -1,7 +1,7 @@
 {% load myfilters %}
 
-<nav class="navbar navbar-dark bg-primary navbar-expand-lg">
-  <a class="navbar-brand" href="{% url "product:list" %}">E-commerce</a>
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+  <a class="navbar-brand" href="{% url 'product:list' %}">E-commerce</a>
   <button
     class="navbar-toggler"
     type="button"
@@ -27,20 +27,20 @@
           aria-haspopup="true"
           aria-expanded="false"
         >
-          Dropdown
+          Actions
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'order:list' %}">My orders</a>
+          <a class="dropdown-item" href="{% url 'order:list' %}">See my orders</a>
           <a class="dropdown-item" href="{% url 'profiles:create' %}">Update my data</a>
           <a class="dropdown-item" href="{% url 'profiles:logout' %}">Logout</a>
         </div>
       </li>
       {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url "profiles:create" %}">Login</a>
+        <a class="nav-link" href="{% url 'profiles:create' %}">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url "profiles:create" %}">Register</a>
+        <a class="nav-link" href="{% url 'profiles:create' %}">Register</a>
       </li>
       {% endif %}
       {% if request.session.cart %}
