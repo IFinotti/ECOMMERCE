@@ -4,17 +4,17 @@
 
 <div class="row">
   <div class="col">
-      <h3 class="mb-4">Pedidos de {{user}}</h3>
-      <p>Abaixo todos os seus pedidos realizados na loja.</p>
+      <h3 class="mb-4">Orders by {{user}}</h3>
+      <p>Below are all orders placed in the store.</p>
 
       <div class="table-responsive">
           <table class="table table-striped">
               <tr>
-                  <th scope="col">Pedido</th>
+                  <th scope="col">Order</th>
                   <th scope="col">Total</th>
-                  <th scope="col">Qtd. Itens</th>
+                  <th scope="col">Qtt. Items</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Mais detalhes</th>
+                  <th scope="col">Details</th>
               </tr>
 
               {% for order in orders  %}
@@ -25,7 +25,7 @@
                   <td>{{order.get_status_display}}</td>
                   <td>
                     <a href="{% url 'order:detail' order.id %}">
-                      <i class="fas fa-search-plus ml-2">Ver </i>
+                      See <i class="fas fa-search-plus ml-2"></i>
                     </a>
                   </td>
                 </tr>
