@@ -10,7 +10,7 @@
     <h2>Resumo da sua compra</h2>
 
     <p class="lead">Dados do usuário</p>
-    <p>Caso precise editar, <a href="{% url "profiles:create" %}">clique aqui</a></p>
+    <p>Caso precise editar, <a href="{% url 'profiles:create' %}">clique aqui</a></p>
     <dl class="row">
       <dt class="col-lg-2">Nome:</dt>
       <dd class="col-lg-4">{{user.first_name}}</dd>
@@ -18,12 +18,12 @@
       <dd class="col-lg-4">{{user.last_name}}</dd>
 
       <dt class="col-lg-2">Idade:</dt>
-      <dd class="col-lg-4">{{user.profiles.age}}</dd>
+      <dd class="col-lg-4">{{user.profile.age}}</dd>
       <dt class="col-lg-2">Nascimento:</dt>
-      <dd class="col-lg-4">{{user.profiles.birth_date}}</dd>
+      <dd class="col-lg-4">{{user.profile.birth_date}}</dd>
 
       <dt class="col-lg-2">CPF:</dt>
-      <dd class="col-lg-4">{{user.profiles.cpf}}</dd>
+      <dd class="col-lg-4">{{user.profile.cpf}}</dd>
       <dt class="col-lg-2">E-mail:</dt>
       <dd class="col-lg-4">{{user.email}}</dd>
     </dl>
@@ -32,22 +32,22 @@
     <p>Caso precise editar, <a href="{% url "profiles:create" %}">clique aqui</a></p>
     <dl class="row">
       <dt class="col-lg-2">Endereço:</dt>
-      <dd class="col-lg-4">{{user.profiles.address}}</dd>
+      <dd class="col-lg-4">{{user.profile.address}}</dd>
       <dt class="col-lg-2">Número:</dt>
-      <dd class="col-lg-4">{{user.profiles.number}}</dd>
+      <dd class="col-lg-4">{{user.profile.number}}</dd>
 
       <dt class="col-lg-2">Complemento:</dt>
-      <dd class="col-lg-4">{{user.profiles.complement}}</dd>
-      <dt class="col-lg- 2">Nascimento:</dt>
-      <dd class="col-lg-4">{{user.profiles.hood}}</dd>
+      <dd class="col-lg-4">{{user.profile.complement}}</dd>
+      <dt class="col-lg-2">Bairro:</dt>
+      <dd class="col-lg-4">{{user.profile.hood}}</dd>
 
       <dt class="col-lg-2">Cidade:</dt>
-      <dd class="col-lg-4">{{user.profiles.city}}</dd>
+      <dd class="col-lg-4">{{user.profile.city}}</dd>
       <dt class="col-lg-2">Estado:</dt>
-      <dd class="col-lg-4">{{user.profiles.state}}</dd>
+      <dd class="col-lg-4">{{user.profile.state}}</dd>
 
       <dt class="col-lg-2">CEP:</dt>
-      <dd class="col-lg-4">{{user.profiles.cep}}</dd>
+      <dd class="col-lg-4">{{user.profile.cep}}</dd>
     </dl>
   </div>
 </div>

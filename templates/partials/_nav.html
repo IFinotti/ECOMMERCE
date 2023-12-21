@@ -46,7 +46,7 @@
       {% if request.session.cart %}
       <li class="nav-item">
         <a class="nav-link nav-cart-link active" href="{% url "product:cart" %}">
-          <span class="nav-cart-text mr-1"> Carrinho </span>
+          <span class="nav-cart-text mr-1"> Cart </span>
           <span class="nav-cart-count mr-1">
             <strong>{{request.session.cart|total_cart_qtt}}x</strong>
           </span>
