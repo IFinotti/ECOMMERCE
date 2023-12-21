@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -12,7 +13,6 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.FloatField()
     total_qtt = models.PositiveIntegerField()
-    paid = models.BooleanField(default=False)
     status = models.CharField(
         default="C",
         max_length=1,
