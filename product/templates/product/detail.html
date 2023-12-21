@@ -1,7 +1,5 @@
-{% extends "base.html" %} {% load myfilters %}  
-{% block title %}{{product.name}} | {% endblock title %}
-
-{% block content %}
+{% extends "base.html" %} {% load myfilters %} {% block title %}{{product.name}}
+| {% endblock title %} {% block content %}
 <div class="row">
   <div class="col-lg">
     <div class="row no-gutters">
@@ -31,7 +29,7 @@
         {% endif %}
       </p>
 
-      <form action="{% url "product:addtocart"%}" id="form-add-to-cart">
+      <form action="{% url 'product:addtocart'%}" id="form-add-to-cart">
         <div class="form-group">
           <select
             id="select-variacoes"
@@ -92,7 +90,7 @@
 <div class="row">
   <div class="col-lg-12">
     <div class="mt-5 mb-5">
-      <h2 class="text-center">{{product.name}}</h2>
+      <h2 class="text-center mb-5">{{product.name}}</h2>
       {{product.long_description|linebreaks}}
     </div>
   </div>

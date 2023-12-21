@@ -1,7 +1,6 @@
 {% extends "base.html" %} {% load myfilters %}
 <!--disable-eslint-->
-{% block title %}Cart | {% endblock title %}
-{% block content %} {% if cart %}
+{% block title %}Cart | {% endblock title %} {% block content %} {% if cart %}
 
 <div class="row mt-3">
   <div class="col">
@@ -27,12 +26,18 @@
   </div>
   <div class="col-lg mt-auto">
     {% if request.user.is_authenticated %}
-    <a class="btn btn-lg btn-block btn-primary" href="{% url "product:purchaseSummary" %}">
+    <a
+      class="btn btn-lg btn-block btn-primary"
+      href="{% url 'product:purchaseSummary' %}"
+    >
       Buy
     </a>
     {% else %}
-    <a class="btn btn-lg btn-block btn-primary" href="{% url "profiles:create" %}">
-      Login / Register 
+    <a
+      class="btn btn-lg btn-block btn-primary"
+      href="{% url 'profiles:create' %}"
+    >
+      Login / Register
     </a>
     {% endif %}
   </div>
