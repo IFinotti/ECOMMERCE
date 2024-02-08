@@ -1,10 +1,9 @@
 from django.views.generic import ListView, DetailView
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, reverse
 from product.models import Variation
 from .models import Order, OrderItem
 from django.http import HttpResponse
 from django.contrib import messages
-from django.urls import reverse
 from django.views import View
 from utils import utils
 
@@ -43,9 +42,9 @@ class SaveOrder(View):
             return redirect('product:list')
 
         cart = self.request.session.get('cart')
-        cart_variation_id = [v for v in cart]
+        cart_variation_ids = [v for v in cart]
         bd_variations = list(
-            Variation.objects.select_related('product').filter(id__in=cart_variation_id))
+            Variation.objects.select_related('product').filter(id__in=cart_variation_ids))
 
         for variation in bd_variations:
             vid = str(variation.id)
@@ -67,55 +66,53 @@ class SaveOrder(View):
                       Please verify on your cart which products are affected by it.'
 
             if error_stock:
-                messages.error(
-                    self.request, error_stock)
+                messages.error(self.request, error_stock)
                 self.request.session.save()
                 return redirect('product:cart')
 
-            total_qtt_cart = utils.total_cart_qtt(cart)
-            total_price_cart = utils.cart_total_price(cart)
+        total_qtt_cart = utils.total_cart_qtt(cart)
+        total_price_cart = utils.cart_total_price(cart)
 
-            order = Order(
-                user=self.request.user,
-                total=total_price_cart,
-                total_qtt=total_qtt_cart,
-                status='C',
+        order = Order(
+            user=self.request.user,
+            total=total_price_cart,
+            total_qtt=total_qtt_cart,
+            status='C',
+        )
+
+        order.save()
+
+        # Instead of saving each instance separately, bulk_create performs \
+        # a batch insert into the database, reducing the number of queries executed. \
+        # It's particularly useful when you have a large number of objects to create, as it can \
+        # significantly improve performance compared to saving them one by one.
+
+        OrderItem.objects.bulk_create(
+            [
+                OrderItem(
+                    order=order,
+                    product=v['product_name'],
+                    id_product=v['product_id'],
+                    variation=v['variation_name'],
+                    id_variation=v['variation_id'],
+                    price=v['quantitative_price'],
+                    promotional_price=v['promotional_quantitative_price'],
+                    quantity=v['quantity'],
+                    image=v['image'],
+
+                ) for v in cart.values()
+            ]
+        )
+
+        del self.request.session['cart']
+        return redirect(
+            reverse(
+                'order:pay',
+                kwargs={
+                    'pk': order.pk
+                }
             )
-
-            order.save()
-
-            # Instead of saving each instance separately, bulk_create performs \
-            # a batch insert into the database, reducing the number of queries executed. \
-            # It's particularly useful when you have a large number of objects to create, as it can \
-            # significantly improve performance compared to saving them one by one.
-
-            OrderItem.objects.bulk_create(
-                [
-                    OrderItem(
-                        order=order,
-                        product=v['product_name'],
-                        id_product=v['product_id'],
-                        variation=v['variation_name'],
-                        id_variation=v['variation_id'],
-                        price=v['quantitative_price'],
-                        promotional_price=v['promotional_quantitative_price'],
-                        quantity=v['quantity'],
-                        image=v['image'],
-
-                    ) for v in cart.values()
-                ]
-            )
-
-            del self.request.session['cart']
-            # return render(self.request, self.template_name)
-            return redirect(
-                reverse(
-                    'order:pay',
-                    kwargs={
-                        'pk': order.pk
-                    }
-                )
-            )
+        )
 
 
 class Detail(DispatchLoginRequiredMixin, DetailView):
