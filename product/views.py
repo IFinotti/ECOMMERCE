@@ -67,7 +67,7 @@ class AddToCart(View):
         variation_stock = variation.stock
         product = variation.product
 
-        product_id = product.pk
+        product_id = product.id
         product_name = product.name
         variation_name = variation.name or ''
         unit_price = variation.price

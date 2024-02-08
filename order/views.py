@@ -1,10 +1,14 @@
+
+
+from django.shortcuts import redirect,
 from django.views.generic import ListView, DetailView
-from django.shortcuts import redirect, reverse
+from django.views import View
+# from django.http import HttpResponse
+from django.contrib import messages
+
 from product.models import Variation
 from .models import Order, OrderItem
-from django.http import HttpResponse
-from django.contrib import messages
-from django.views import View
+
 from utils import utils
 
 # Create your views here.
@@ -14,11 +18,12 @@ class DispatchLoginRequiredMixin(View):
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return redirect('profiles:create')
+
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        qs = qs.filter(user=self.request.user)
+        qs = qs.filter(usuario=self.request.user)
         return qs
 
 
@@ -51,16 +56,16 @@ class SaveOrder(View):
 
             stock = variation.stock
             qtt_cart = cart[vid]['quantity']
-            unit_price = cart[vid]['unit_price']
-            promotional_unit_price = cart[vid]['promotional_unit_price']
+            price_unit = cart[vid]['unit_price']
+            promo_unit_price = cart[vid]['promotional_unit_price']
 
             error_stock = ''
 
             if stock < qtt_cart:
                 cart[vid]['quantity'] = stock
-                cart[vid]['quantitative_price'] = stock * unit_price
+                cart[vid]['quantitative_price'] = stock * price_unit
                 cart[vid]['promotional_quantitative_price'] = stock * \
-                    promotional_unit_price
+                    promo_unit_price
 
                 error_stock = 'Your cart contains products that are out of stock. \
                       Please verify on your cart which products are affected by it.'
@@ -81,11 +86,6 @@ class SaveOrder(View):
         )
 
         order.save()
-
-        # Instead of saving each instance separately, bulk_create performs \
-        # a batch insert into the database, reducing the number of queries executed. \
-        # It's particularly useful when you have a large number of objects to create, as it can \
-        # significantly improve performance compared to saving them one by one.
 
         OrderItem.objects.bulk_create(
             [
