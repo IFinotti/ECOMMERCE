@@ -1,7 +1,7 @@
 {% load myfilters %}
 
-<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-  <a class="navbar-brand" href="{% url 'product:list' %}">Finotti</a>
+<nav class="navbar bg-white navbar-expand-lg">
+  <a class="navbar-brand ml-5 text-dark" style="font-family: Martian Mono;" href="{% url 'product:list' %}">Finotti</a>
   <button
     class="navbar-toggler"
     type="button"
@@ -32,7 +32,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'order:list' %}">See my orders</a>
           <a class="dropdown-item" href="{% url 'profiles:create' %}">Update my data</a>
-          <a class="dropdown-item" href="{% url 'profiles:logout' %}">Logout</a>
+          <a class="dropdown-item text-danger" href="{% url 'profiles:logout' %}">Logout</a>
         </div>
       </li>
       {% else %}
@@ -57,7 +57,7 @@
       </li>
       {% endif %}
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="{% url 'product:search' %}">
+    <form class="form-inline my-2 my-lg-0" style="font-family: Martian Mono;" action="{% url 'product:search' %}">
       <input
         name="termo"
         value="{{request.GET.termo}}"
@@ -66,9 +66,10 @@
         placeholder="Search"
         aria-label="Search"
       />
-      <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+      <button class="btn btn-secondary my-2 my-sm-0 mr-5" type="submit">
         Search
       </button>
     </form>
   </div>
 </nav>
+
