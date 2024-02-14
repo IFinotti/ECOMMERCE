@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect, reverse, get_object_or_404  # type:ignore
-from django.views.generic.detail import DetailView
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.generic.list import ListView
-from profiles.models import Profile
+from django.views.generic.detail import DetailView
+from django.views import View
+from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
-from django.views import View
+
 from . import models
-# Create your views here.
+from account.models import Account
 
 
 class ProductList(ListView):
@@ -15,13 +16,6 @@ class ProductList(ListView):
     context_object_name = 'products'
     paginate_by = 10
     ordering = ['-id']
-
-
-class ProductDetail(DetailView):
-    model = models.Product
-    template_name = 'product/detail.html'
-    context_object_name = 'product'
-    slug_url_kwarg = 'slug'
 
 
 class Search(ProductList):
@@ -35,31 +29,34 @@ class Search(ProductList):
         self.request.session['termo'] = termo
 
         qs = qs.filter(
-            Q(name__icontains=termo) |
-            Q(short_description__icontains=termo) |
-            Q(long_description__icontains=termo)
+            Q(nome__icontains=termo) |
+            Q(shortest_description__icontains=termo) |
+            Q(longest_description__icontains=termo)
         )
 
         self.request.session.save()
         return qs
 
 
+class ProductDetail(DetailView):
+    model = models.Product
+    template_name = 'product/detail.html'
+    context_object_name = 'product'
+    slug_url_kwarg = 'slug'
+
+
 class AddToCart(View):
     def get(self, *args, **kwargs):
-
-        # if self.request.session.get('cart'):
-        #     del self.request.session['cart']
-        #     self.request.session.save()
-
         http_referer = self.request.META.get(
-            'HTTP_REFERER', reverse('product:list')
+            'HTTP_REFERER',
+            reverse('product:list')
         )
         variation_id = self.request.GET.get('vid')
 
         if not variation_id:
             messages.error(
                 self.request,
-                'This product does not exist.'
+                'Produto não existe'
             )
             return redirect(http_referer)
 
@@ -83,37 +80,41 @@ class AddToCart(View):
 
         if variation.stock < 1:
             messages.error(
-                self.request, 'Insufficient stock'
+                self.request,
+                'Estoque insuficiente'
             )
             return redirect(http_referer)
 
-        # this 'if' statement check if a cart exists in a client account
         if not self.request.session.get('cart'):
             self.request.session['cart'] = {}
             self.request.session.save()
 
         cart = self.request.session['cart']
+
         if variation_id in cart:
-            # variation exists in the cart
             cart_quantity = cart[variation_id]['quantity']
             cart_quantity += 1
 
             if variation_stock < cart_quantity:
                 messages.warning(
-                    self.request, f'Insufficient stock for {cart_quantity}x in {product_name}.'
-                    f'We add {variation_stock}x on your cart.'
+                    self.request,
+                    f'Estoque insuficiente para {cart_quantity}x no '
+                    f'produto "{product_name}". Adicionamos {variation_stock}x '
+                    f'no seu carrinho.'
                 )
                 cart_quantity = variation_stock
 
-            cart[variation_id]['quantity'] = cart_quantity
-            cart[variation_id]['quantitative_price'] = unit_price * cart_quantity
-            cart[variation_id]['promotional_quantitative_price'] = promotional_unit_price * cart_quantity
+            cart[variation_id]['quantidade'] = cart_quantity
+            cart[variation_id]['preco_quantitativo'] = unit_price * \
+                cart_quantity
+            cart[variation_id]['preco_quantitativo_promocional'] = promotional_unit_price * \
+                cart_quantity
         else:
-            # variation does not exist in the cart
             cart[variation_id] = {
                 'product_id': product_id,
                 'product_name': product_name,
                 'variation_name': variation_name,
+                'variation_id': variation_id,
                 'unit_price': unit_price,
                 'promotional_unit_price': promotional_unit_price,
                 'quantitative_price': unit_price,
@@ -121,13 +122,15 @@ class AddToCart(View):
                 'quantity': 1,
                 'slug': slug,
                 'image': image,
-                'variation_id': variation_id,
             }
 
         self.request.session.save()
+
         messages.success(
             self.request,
-            f'{product_name} {variation_name} has been added to your cart {cart[variation_id]["quantity"]}x')
+            f'Produto {product_name} {variation_name} adicionado ao seu '
+            f'carrinho {cart[variation_id]["quantity"]}x.'
+        )
 
         return redirect(http_referer)
 
@@ -179,18 +182,18 @@ class Cart(View):
 class PurchaseSummary(View):
     def get(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
-            return redirect('profiles:create')
+            return redirect('account:create')
 
-        profile = Profile.objects.filter(user=self.request.user).exists()
+        account = Account.objects.filter(user=self.request.user).exists()
 
-        if not profile:
+        if not account:
             messages.error(self.request, 'User does not have a profile.')
-            return redirect('profiles:create')
+            return redirect('account:create')
 
         if not self.request.session.get('cart'):
             messages.error(self.request, 'Empty cart.')
 
-            return redirect('product:list')
+            return redirect('account:list')
 
         context = {
             'user': self.request.user,

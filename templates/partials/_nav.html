@@ -31,16 +31,16 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'order:list' %}">See my orders</a>
-          <a class="dropdown-item" href="{% url 'profiles:create' %}">Update my data</a>
-          <a class="dropdown-item text-danger" href="{% url 'profiles:logout' %}">Logout</a>
+          <a class="dropdown-item" href="{% url 'account:create' %}">Update my data</a>
+          <a class="dropdown-item text-danger" href="{% url 'account:logout' %}">Logout</a>
         </div>
       </li>
       {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'profiles:create' %}">Login</a>
+        <a class="nav-link" href="{% url 'account:create' %}">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'profiles:create' %}">Register</a>
+        <a class="nav-link" href="{% url 'account:create' %}">Register</a>
       </li>
       {% endif %}
       {% if request.session.cart %}

@@ -19,7 +19,7 @@
       <table class="table">
         <tr>
           <td class="font-weight-bold">Total</td>
-          <td>{{cart|cart_total_price|format_price }}</td>
+          <td>{{cart|cart_totals|format_price }}</td>
         </tr>
       </table>
     </div>
@@ -35,7 +35,7 @@
     {% else %}
     <a
       class="btn btn-lg btn-block btn-primary"
-      href="{% url 'profiles:create' %}"
+      href="{% url 'account:create' %}"
     >
       Login / Register
     </a>

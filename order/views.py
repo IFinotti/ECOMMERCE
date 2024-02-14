@@ -1,6 +1,4 @@
-
-
-from django.shortcuts import redirect,
+from django.shortcuts import redirect, reverse
 from django.views.generic import ListView, DetailView
 from django.views import View
 # from django.http import HttpResponse
@@ -11,19 +9,17 @@ from .models import Order, OrderItem
 
 from utils import utils
 
-# Create your views here.
-
 
 class DispatchLoginRequiredMixin(View):
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
-            return redirect('profiles:create')
+            return redirect('account:create')
 
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        qs = qs.filter(usuario=self.request.user)
+        qs = qs.filter(user=self.request.user)
         return qs
 
 
@@ -39,49 +35,63 @@ class SaveOrder(View):
 
     def get(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, 'You need to login.')
-            return redirect('profiles:create')
+            messages.error(
+                self.request,
+                'Você precisa fazer login.'
+            )
+            return redirect('account:create')
 
         if not self.request.session.get('cart'):
-            messages.error(self.request, 'Empty cart.')
+            messages.error(
+                self.request,
+                'Seu carrinho está vazio.'
+            )
             return redirect('product:list')
 
         cart = self.request.session.get('cart')
         cart_variation_ids = [v for v in cart]
         bd_variations = list(
-            Variation.objects.select_related('product').filter(id__in=cart_variation_ids))
+            Variation.objects.select_related('product')
+            .filter(id__in=cart_variation_ids)
+        )
 
         for variation in bd_variations:
             vid = str(variation.id)
 
             stock = variation.stock
-            qtt_cart = cart[vid]['quantity']
-            price_unit = cart[vid]['unit_price']
-            promo_unit_price = cart[vid]['promotional_unit_price']
+            cart_qtt = cart[vid]['quantity']
+            unit_price = cart[vid]['unit_price']
+            promotional_unit_price = cart[vid]['promotional_unit_price']
 
-            error_stock = ''
+            error_msg_stock = ''
 
-            if stock < qtt_cart:
+            if stock < cart_qtt:
                 cart[vid]['quantity'] = stock
-                cart[vid]['quantitative_price'] = stock * price_unit
+                cart[vid]['quantitative_price'] = stock * unit_price
                 cart[vid]['promotional_quantitative_price'] = stock * \
-                    promo_unit_price
+                    promotional_unit_price
 
-                error_stock = 'Your cart contains products that are out of stock. \
-                      Please verify on your cart which products are affected by it.'
+                error_msg_stock = 'Estoque insuficiente para alguns '\
+                    'produtos do seu cart. '\
+                    'Reduzimos a quantidade desses produtos. Por favor, '\
+                    'verifique quais produtos foram afetados a seguir.'
 
-            if error_stock:
-                messages.error(self.request, error_stock)
+            if error_msg_stock:
+                messages.error(
+                    self.request,
+                    error_msg_stock
+                )
+
                 self.request.session.save()
                 return redirect('product:cart')
 
-        total_qtt_cart = utils.total_cart_qtt(cart)
-        total_price_cart = utils.cart_total_price(cart)
+        total_cart_qtt = utils.total_cart_qtt(cart)
+        total_cart_price = utils.cart_totals(cart)
 
         order = Order(
             user=self.request.user,
-            total=total_price_cart,
-            total_qtt=total_qtt_cart,
+            total=total_cart_price,
+            total_qtt=total_cart_qtt,
             status='C',
         )
 
@@ -92,19 +102,19 @@ class SaveOrder(View):
                 OrderItem(
                     order=order,
                     product=v['product_name'],
-                    id_product=v['product_id'],
+                    product_id=v['product_id'],
                     variation=v['variation_name'],
-                    id_variation=v['variation_id'],
+                    variation_id=v['variation_id'],
                     price=v['quantitative_price'],
                     promotional_price=v['promotional_quantitative_price'],
                     quantity=v['quantity'],
                     image=v['image'],
-
                 ) for v in cart.values()
             ]
         )
 
         del self.request.session['cart']
+
         return redirect(
             reverse(
                 'order:pay',

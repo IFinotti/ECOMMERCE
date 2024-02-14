@@ -21,10 +21,10 @@
           <div class="container product-price-block text-center">
             {% if product.promotional_marketing_price%}
             <span class="product-price">
-              {{product.promotional_marketing_price|format_price}}
+              {{product.promotional_marketing_price}}
             </span>
             <span class="product-old-price text-muted">
-              {{product.marketing_price|format_price}}
+              {{product.marketing_price}}
             </span>
             {% else %}
             <span class="product-price"> {{product.marketing_price}} </span>

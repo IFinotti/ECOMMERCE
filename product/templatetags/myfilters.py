@@ -1,6 +1,6 @@
-from re import U
 from django.template import Library
 from utils import utils
+
 
 register = Library()
 
@@ -16,5 +16,5 @@ def total_cart_qtt(cart):
 
 
 @register.filter
-def cart_total_price(cart):
-    return utils.cart_total_price(cart)
+def cart_totals(cart):
+    return utils.cart_totals(cart)
