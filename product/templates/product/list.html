@@ -17,14 +17,14 @@
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{product.name}}</h5>
-          <p class="card-text">{{product.short_description}}</p>
+          <p class="card-text">{{product.shortest_description}}</p>
           <div class="container product-price-block text-center">
             {% if product.promotional_marketing_price%}
             <span class="product-price">
-              {{product.promotional_marketing_price}}
+              {{product.promotional_marketing_price|format_price}}
             </span>
             <span class="product-old-price text-muted">
-              {{product.marketing_price}}
+              {{product.marketing_price|format_price}}
             </span>
             {% else %}
             <span class="product-price"> {{product.marketing_price}} </span>
@@ -39,7 +39,7 @@
             class="btn btn-primary bg-dark btn-sm m-1 btn-block"
           >
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-            Comprar
+            Buy
           </a>
         </div>
       </div>
