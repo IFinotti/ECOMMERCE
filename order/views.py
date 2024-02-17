@@ -1,10 +1,10 @@
-from django.shortcuts import redirect, reverse
+from django.shortcuts import redirect, reverse, render
 from django.views.generic import ListView, DetailView
 from django.views import View
 # from django.http import HttpResponse
 from django.contrib import messages
 
-from product.models import Variation
+from product.models import Variation, Product
 from .models import Order, OrderItem
 
 from utils import utils

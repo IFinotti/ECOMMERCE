@@ -193,7 +193,7 @@ class PurchaseSummary(View):
         if not self.request.session.get('cart'):
             messages.error(self.request, 'Empty cart.')
 
-            return redirect('account:list')
+            return redirect('product:list')
 
         context = {
             'user': self.request.user,

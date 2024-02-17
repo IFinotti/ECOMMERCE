@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'crispy_forms',
+    'paypal.standard.ipn',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -145,7 +146,7 @@ MESSAGE_TAGS = {
     constants.WARNING: 'alert-warning',
 }
 
-# Sessão em dias: 60s * 60m * 24h * 1d
+# Sessão  em dias: 60s * 60m * 24h * 1d
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
 
 # Salvar a cada requisição
