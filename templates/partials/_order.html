@@ -4,12 +4,12 @@
     <h3>{{ order }}</h3>
 
     <div class="row mt-4">
-      <div class="col-lg-2 font-weight-bold">Número do pedido:</div>
+      <div class="col-lg-2 font-weight-bold">Order number:</div>
       <div class="col-lg-4">{{ order.id }}</div>
-      <div class="col-lg-2 font-weight-bold">Total a pagar:</div>
+      <div class="col-lg-2 font-weight-bold">Total:</div>
       <div class="col-lg-4">{{ order.total|format_price }}</div>
 
-      <div class="col-lg-2 font-weight-bold">QTD. Itens:</div>
+      <div class="col-lg-2 font-weight-bold">Quantity of items:</div>
       <div class="col-lg-4">{{ order.total_qtt }}</div>
       <div class="col-lg-2 font-weight-bold">Status:</div>
       <div class="col-lg-4">{{ order.get_status_display }}</div>
@@ -17,17 +17,17 @@
 
     <div class="row mt-4">
       <div class="col">
-        <h3>Produtos</h3>
+        <h3>Products</h3>
       </div>
     </div>
 
     <div class="table-responsive mt-3">
       <table class="table">
         <tr>
-          <th class="d-none d-lg-block">Imagem</th>
-          <th>Produto</th>
-          <th>V.</th>
-          <th>QTD.</th>
+          <th class="d-none d-lg-block">Image</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>QTT.</th>
           <th>Total</th>
         </tr>
 

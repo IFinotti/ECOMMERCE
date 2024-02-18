@@ -29,7 +29,7 @@ class Search(ProductList):
         self.request.session['termo'] = termo
 
         qs = qs.filter(
-            Q(nome__icontains=termo) |
+            Q(name__icontains=termo) |
             Q(shortest_description__icontains=termo) |
             Q(longest_description__icontains=termo)
         )
@@ -128,8 +128,8 @@ class AddToCart(View):
 
         messages.success(
             self.request,
-            f'Produto {product_name} {variation_name} adicionado ao seu '
-            f'carrinho {cart[variation_id]["quantity"]}x.'
+            f'Product {product_name} {variation_name} added to your '
+            f'cart {cart[variation_id]["quantity"]}x.'
         )
 
         return redirect(http_referer)
