@@ -5,6 +5,7 @@ from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
+from . import models
 
 from . import models
 from account.models import Account
@@ -16,6 +17,14 @@ class ProductList(ListView):
     context_object_name = 'products'
     paginate_by = 10
     ordering = ['-id']
+
+    def get(self, request, *args, **kwargs):
+        available_variations = models.Variation.objects.filter(stock__gt=0)
+
+        products = models.Product.objects.filter(
+            variation__in=available_variations).distinct()
+
+        return render(request, 'product/list.html', {'products': products})
 
 
 class Search(ProductList):
@@ -61,7 +70,6 @@ class AddToCart(View):
             return redirect(http_referer)
 
         variation = get_object_or_404(models.Variation, id=variation_id)
-        variation_stock = variation.stock
         product = variation.product
 
         product_id = product.id
@@ -95,20 +103,18 @@ class AddToCart(View):
             cart_quantity = cart[variation_id]['quantity']
             cart_quantity += 1
 
-            if variation_stock < cart_quantity:
+            if variation.stock < cart_quantity:
                 messages.warning(
                     self.request,
                     f'Estoque insuficiente para {cart_quantity}x no '
-                    f'produto "{product_name}". Adicionamos {variation_stock}x '
+                    f'produto "{product_name}". Adicionamos {variation.stock}x '
                     f'no seu carrinho.'
                 )
-                cart_quantity = variation_stock
+                cart_quantity = variation.stock
 
-            cart[variation_id]['quantidade'] = cart_quantity
-            cart[variation_id]['preco_quantitativo'] = unit_price * \
-                cart_quantity
-            cart[variation_id]['preco_quantitativo_promocional'] = promotional_unit_price * \
-                cart_quantity
+            cart[variation_id]['quantity'] = cart_quantity
+            cart[variation_id]['quantitative_price'] = unit_price * cart_quantity
+            cart[variation_id]['promotional_quantitative_price'] = promotional_unit_price * cart_quantity
         else:
             cart[variation_id] = {
                 'product_id': product_id,
@@ -124,12 +130,13 @@ class AddToCart(View):
                 'image': image,
             }
 
+        self.request.session['cart'] = cart
         self.request.session.save()
 
         messages.success(
             self.request,
-            f'Product {product_name} {variation_name} added to your '
-            f'cart {cart[variation_id]["quantity"]}x.'
+            f'Produto {product_name} {variation_name} adicionado ao seu '
+            f'carrinho {cart[variation_id]["quantity"]}x.'
         )
 
         return redirect(http_referer)
@@ -146,27 +153,30 @@ class RemoveFromCart(View):
             print('Variation ID not found')  # Debug
             return redirect(http_referer)
 
-        if not variation_id:
-            return redirect(http_referer)
-
         if not self.request.session.get('cart'):
             return redirect(http_referer)
 
-        if variation_id not in self.request.session['cart']:
+        cart = self.request.session['cart']
+
+        if variation_id not in cart:
             return redirect(http_referer)
 
-        cart = self.request.session['cart'][variation_id]
+        cart_item = cart[variation_id]
+        cart_quantity = cart_item['quantity']
 
-        print('Before deletion')  # Adiciona este log
+        if cart_quantity > 1:
+            cart_quantity -= 1
+            cart[variation_id]['quantity'] = cart_quantity
+            cart[variation_id]['quantitative_price'] = cart_item['unit_price'] * cart_quantity
+            cart[variation_id]['promotional_quantitative_price'] = cart_item['promotional_unit_price'] * cart_quantity
+        else:
+            del cart[variation_id]
 
-        messages.success(
-            self.request, f'Product {cart["product_name"]} {cart["variation_name"]} removed from your cart')
-        del self.request.session['cart'][variation_id]
-
+        self.request.session['cart'] = cart
         self.request.session.save()
 
-        print('After deletion')  # Adiciona este log
-
+        messages.success(
+            self.request, f'Produto {cart_item["product_name"]} {cart_item["variation_name"]} removido do seu carrinho')
         return redirect(http_referer)
 
 

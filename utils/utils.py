@@ -1,5 +1,5 @@
 def format_price(val):
-    return f'$ {val:.2f}'.replace('.', ',')
+    return f'R$ {val:.2f}'.replace('.', ',')
 
 
 def total_cart_qtt(cart):
@@ -7,12 +7,12 @@ def total_cart_qtt(cart):
 
 
 def cart_totals(cart):
-    return sum(
-        [
-            item.get('promotional_quantitative_price')
-            if item.get('promotional_quantitative_price')
-            else item.get('quantitative_price')
-            for item
-            in cart.values()
-        ]
-    )
+    total = 0
+    for item in cart.values():
+        # Garantindo que a quantidade seja obtida corretamente
+        quantity = item.get('quantity', 1)
+        unit_price = item.get('promotional_unit_price') if item.get(
+            'promotional_unit_price') else item.get('unit_price')
+        # Multiplica o preço unitário pela quantidade correta de cada item
+        total += quantity * unit_price
+    return total
