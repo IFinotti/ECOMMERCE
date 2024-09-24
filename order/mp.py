@@ -7,7 +7,8 @@ load_dotenv()
 
 
 def create_payment_preference(order, request):
-    sdk = mercadopago.SDK(os.getenv("MERCADO_PAGO_ACCESS_TOKEN"))
+    sdk = mercadopago.SDK(
+        "APP_USR-7583888755221388-080319-687eb0d4ca445458928fe2cc798b0245-547624382")
 
     items = []
     for item in order.orderitem_set.all():
