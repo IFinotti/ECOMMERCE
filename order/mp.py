@@ -1,9 +1,9 @@
 import mercadopago
 from django.urls import reverse
-import os
-from dotenv import load_dotenv
+# import os
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 
 def create_payment_preference(order, request):
