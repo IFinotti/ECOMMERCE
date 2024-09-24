@@ -27,11 +27,11 @@
           aria-haspopup="true"
           aria-expanded="false"
         >
-          Actions
+          Ações
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'order:list' %}">See my orders</a>
-          <a class="dropdown-item" href="{% url 'account:create' %}">Update my data</a>
+          <a class="dropdown-item" href="{% url 'order:list' %}">Meus pedidos</a>
+          <a class="dropdown-item" href="{% url 'account:create' %}">Atualizar meus dados</a>
           <a class="dropdown-item text-danger" href="{% url 'account:logout' %}">Logout</a>
         </div>
       </li>
@@ -40,13 +40,13 @@
         <a class="nav-link" href="{% url 'account:create' %}">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'account:create' %}">Register</a>
+        <a class="nav-link" href="{% url 'account:create' %}">Registrar</a>
       </li>
       {% endif %}
       {% if request.session.cart %}
       <li class="nav-item">
         <a class="nav-link nav-cart-link active" href="{% url "product:cart" %}">
-          <span class="nav-cart-text mr-1"> Cart </span>
+          <span class="nav-cart-text mr-1"> Carrinho </span>
           <span class="nav-cart-count mr-1">
             <strong>{{request.session.cart|total_cart_qtt}}x</strong>
           </span>
@@ -63,11 +63,11 @@
         value="{{request.GET.termo}}"
         class="form-control mr-sm-2"
         type="search"
-        placeholder="Search"
+        placeholder="Buscar"
         aria-label="Search"
       />
       <button class="btn btn-secondary my-2 my-sm-0 mr-5" type="submit">
-        Search
+        Buscar
       </button>
     </form>
   </div>

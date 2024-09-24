@@ -13,7 +13,7 @@ class UserForm(forms.ModelForm):
     # to hide the password on the form
 
     password2 = forms.CharField(
-        required=False, widget=forms.PasswordInput(), label='Confirm password')
+        required=False, widget=forms.PasswordInput(), label='Confirme a senha.')
 
     def __init__(self, user=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,11 +43,11 @@ class UserForm(forms.ModelForm):
         user_db = User.objects.filter(username=user_data).first()
         email_db = User.objects.filter(email=email_data).first()
 
-        error_msg_user_exists = 'User already exists'
-        error_msg_email_exists = 'E-mail already exists'
-        error_msg_password_match = 'The passwords are not the same'
-        error_msg_short_password = 'E-mail already exists'
-        error_msg_required_field = 'This field is required'
+        error_msg_user_exists = 'Usuário já existente.'
+        error_msg_email_exists = 'E-mail já existente.'
+        error_msg_password_match = 'As senhas não coincidem.'
+        error_msg_short_password = 'E-mail já existente.'
+        error_msg_required_field = 'Este campo é obrigatório.'
 
         if self.user:
             if user_db:

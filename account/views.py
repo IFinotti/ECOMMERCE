@@ -57,7 +57,7 @@ class Create(AccountBase):
         # if not self.userform.is_valid():
         if not self.userform.is_valid() or not self.accountform.is_valid():
             messages.error(
-                self.request, "There's some errors in your register. Check that the fields have been filled correctly.")
+                self.request, "Existem alguns erros no seu registro. Verifique se todos os campos foram preenchidos corretamente.")
             return self.render
 
         username = self.userform.cleaned_data.get('username')
@@ -108,7 +108,7 @@ class Create(AccountBase):
         self.request.session.save()
 
         messages.success(
-            self.request, 'Your details are created/updated successfully')
+            self.request, 'Seus dados foram criados/atualizados com sucesso!')
         return redirect('product:cart')
 
 
@@ -124,7 +124,7 @@ class Login(View):
 
         if not username or not password:
             messages.error(
-                self.request, 'Invalid user or passwords')
+                self.request, 'Usuário ou senha inválidos.')
 
             return redirect('account:create')
 
@@ -132,12 +132,12 @@ class Login(View):
 
         if not user:
             messages.error(
-                self.request, 'Invalid user or passwords')
+                self.request, 'Usuário ou senha inválidos.')
             return redirect('account:create')
 
         login(self.request, user=user)
         messages.success(
-            self.request, 'You have succesfully logged in')
+            self.request, 'Login bem sucedido!')
         return redirect('product:cart')
 
 

@@ -13,7 +13,6 @@ def create_payment_preference(order, request):
     for item in order.orderitem_set.all():
         product = item.product
 
-        # Determina o preço unitário
         unit_price = item.promotional_price if item.promotional_price > 0 else item.price
 
         # Print para depuração
@@ -23,7 +22,6 @@ def create_payment_preference(order, request):
         print(f'  Preço unitário usado: {unit_price}')
         print(f'  Quantidade: {item.quantity}')
 
-        # Adiciona o item à lista de itens
         items.append({
             "id": product.id,
             "title": product.name,
@@ -60,7 +58,6 @@ def create_payment_preference(order, request):
         print(f'  Quantidade: {item["quantity"]}')
         print(f'  Preço unitário: {item["unit_price"]}')
 
-    # Cria a preferência de pagamento
     preference_response = sdk.preference().create(request_data)
     preference = preference_response["response"]
     return preference['init_point']

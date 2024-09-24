@@ -1,3 +1,4 @@
+from .models import Order
 from django.views.generic import DetailView
 from django.shortcuts import redirect
 from django.shortcuts import redirect, reverse, render, get_object_or_404
@@ -28,7 +29,7 @@ class DispatchLoginRequiredMixin(View):
 
 
 class Success(DetailView):
-    template_name = 'order/success.html'
+    # template_name = 'order/success.html'
     model = Order
     pk_url_kwarg = 'pk'
     context_object_name = 'order'
@@ -36,31 +37,29 @@ class Success(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # Verifica se o status já foi aprovado para evitar duplicidade
         if self.object.status != 'A':
-            # Atualiza o status da ordem para 'Aprovado'
             self.object.status = 'A'
             self.object.save()
 
-            # Atualiza o estoque dos produtos associados à ordem
             for item in self.object.orderitem_set.all():
                 try:
-                    # Busque a variação correta usando o variation_id
                     variation = Variation.objects.get(id=item.variation_id)
-                    variation.stock -= item.quantity  # Subtrai a quantidade comprada
+                    variation.stock -= item.quantity
                     variation.save()
                 except Variation.DoesNotExist:
-                    # Lida com o caso de não encontrar uma variação vinculada
                     messages.error(
                         request, 'Erro ao atualizar o estoque. Variação não encontrada.')
                     return redirect('order:failure', pk=self.object.pk)
 
-        # Redireciona para a página de sucesso
-        return super().get(request, *args, **kwargs)
+            messages.success(request,
+                             'Compra aprovada com sucesso! Em breve o vendedor \
+                              entrará em contato pelo e-mail cadastrado.')
+
+        return redirect('product:list')
 
 
 class Failure(DetailView):
-    template_name = 'order/failure.html'
+    # template_name = 'order/failure.html'
     model = Order
     pk_url_kwarg = 'pk'
     context_object_name = 'order'
@@ -68,11 +67,13 @@ class Failure(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # Atualiza o status da ordem para 'Disapproved'
         self.object.status = 'D'
         self.object.save()
 
-        return super().get(request, *args, **kwargs)
+        messages.error(request, 'Sua compra falhou! Entre em contato com o \
+                       vendedor ou tente novamente.')
+
+        return redirect('product:list')
 
 
 class Pay(DispatchLoginRequiredMixin, DetailView):

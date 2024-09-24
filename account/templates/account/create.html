@@ -2,18 +2,18 @@
 <!--disable-eslint-->
 {% load crispy_forms_tags %}
 <!--disable-eslint-->
-{% block title %}Create profile | {% endblock title %} {% block content %}
+{% block title %}Criar perfil | {% endblock title %} {% block content %}
 
 <div class="row">
   {% if not request.user.is_authenticated %}
   <div class="col-lg mt-3">
     <h4>Login</h4>
-    <p>If you already have an account, make login below.</p>
+    <p>Se já possui uma conta, faça login abaixo:</p>
 
     <form method="POST" action="{% url 'account:login' %}">
       {% csrf_token %}
       <div class="form-group">
-        <label for="InputUser1">User</label>
+        <label for="InputUser1">Usuário</label>
         <input
           type="text"
           class="form-control"
@@ -24,7 +24,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
+        <label for="exampleInputPassword1">Senha</label>
         <input
           type="password"
           name="password"
@@ -33,7 +33,7 @@
           placeholder="Type your password"
         />
       </div>
-      <button type="submit" class="btn btn-primary btn-block btn-lg">
+      <button type="submit" class="btn btn-primary bg-dark btn-block btn-lg">
         Login
       </button>
     </form>
@@ -42,20 +42,23 @@
 
   <div class="col-lg mt-3">
     {% block title_register %}
-    <h4>Register</h4>
-    <p>If you ain't have an account, please make register below:</p>
+    <h4>Registrar</h4>
+    <p>Se ainda não tem uma conta, registre-se abaixo:</p>
     {% endblock title_register %}
     <form method="POST" action="">
       {% csrf_token %}
       <!--disable-eslint-->
       {{userform.as_p}}
       <!--disable-eslint-->
-      {{accountform.as_p}}
+      {{ accountform.as_p }}
       <!--disable-eslint-->
       <div class="row">
         <div class="col">
-          <button type="submit" class="btn btn-primary btn-block btn-lg">
-            Send
+          <button
+            type="submit"
+            class="btn btn-primary bg-dark btn-block btn-lg"
+          >
+            Enviar
           </button>
         </div>
       </div>

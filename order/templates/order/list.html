@@ -1,41 +1,50 @@
-{% extends "base.html" %} {% load myfilters %} 
-{% block title %}Orders by {{user}} | {% endblock title %}
-{% block content %} 
+{% extends "base.html" %} {% load myfilters %} {% block title %}Pedidos de {{
+user }} | {% endblock title %} {% block content %}
 
 <div class="row">
   <div class="col">
-      <h3 class="mb-4">Orders by {{user}}</h3>
-      <p>Below are all orders placed in the store.</p>
+    <h3 class="mb-4">Pedidos de {{ user }}</h3>
+    <p>Abaixo estão todos seus pedidos.</p>
 
-      <div class="table-responsive">
-          <table class="table table-striped">
-              <tr>
-                  <th scope="col">Order</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Qtt. Items</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Details</th>
-              </tr>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tr>
+          <th scope="col">Pedidos</th>
+          <th scope="col">Total</th>
+          <th scope="col">Qtt. Items</th>
+          <th scope="col">Status</th>
+          <th scope="col">Detalhes</th>
+          <th scope="col">Pagamento</th>
+          <!-- Nova coluna para pagamento -->
+        </tr>
 
-              {% for order in orders  %}
-              <tr>
-                <th scope="row">{{order}}</td>
-                  <td>{{order.total|format_price}}</td>
-                  <td>{{order.total_qtt}}</td>
-                  <td>{{order.get_status_display}}</td>
-                  <td>
-                    <a href="{% url 'order:detail' order.id %}">
-                      See <i class="fas fa-search-plus ml-2"></i>
-                    </a>
-                  </td>
-                </tr>
-              {% endfor %}
-              
-          </table>
-      </div>
+        {% for order in orders %}
+        <tr>
+          <th scope="row">{{ order }}</th>
+          <td>{{ order.total|format_price }}</td>
+          <td>{{ order.total_qtt }}</td>
+          <td>{{ order.get_status_display }}</td>
+          <td>
+            <a href="{% url 'order:detail' order.id %}">
+              Ver <i class="fas fa-search-plus ml-2"></i>
+            </a>
+          </td>
+          <td>
+            {% if order.status == 'P' %}
+            <!-- Verifica se o status permite pagamento -->
+            <a
+              href="{% url 'order:pay' order.id %}"
+              class="btn btn-primary bg-dark btn-sm"
+            >
+              Pagar <i class="fas fa-credit-card ml-2"></i>
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
   </div>
 </div>
 
-{% include "partials/_pagination.html" %}
-
-{% endblock content %}
+{% include "partials/_pagination.html" %} {% endblock content %}

@@ -1,6 +1,4 @@
 from django.db import models
-from django.conf import settings
-
 from django.contrib.auth.models import User
 from product.models import Variation, Product
 
@@ -8,19 +6,17 @@ from product.models import Variation, Product
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.FloatField()
-    qr_code_image = models.ImageField(
-        upload_to='pix_qrcodes/', blank=True, null=True)  # Campo para o QR Code
     total_qtt = models.PositiveIntegerField()
     status = models.CharField(
         default="C",
         max_length=1,
         choices=(
-            ('A', 'Approved'),  # Aprovado
-            ('C', 'Created'),  # Criado
-            ('D', 'Disapproved'),  # Desaprovado
-            ('P', 'Pending'),  # Pendente
-            ('S', 'Sent'),  # Enviado
-            ('F', 'Finished'),  # Finalizado
+            ('A', 'Aprovado'),  # Aprovado
+            ('C', 'Criado'),  # Criado
+            ('D', 'Desaprovado'),  # Desaprovado
+            ('P', 'Pendente'),  # Pendente
+            ('E', 'Enviado'),  # Enviado
+            ('F', 'Finalizado'),  # Finalizado
         )
     )
 
@@ -41,7 +37,6 @@ class OrderItem(models.Model):
 
     @property
     def unit_price(self):
-        # Usa o preço promocional se disponível, caso contrário, usa o preço normal
         return self.promotional_price if self.promotional_price > 0 else self.price
 
     def __str__(self):
