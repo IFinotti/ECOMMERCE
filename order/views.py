@@ -1,17 +1,13 @@
-from .models import Order
-from django.views.generic import DetailView
-from django.shortcuts import redirect
 from django.shortcuts import redirect, reverse, render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from django.views import View
-# from django.http import HttpResponse
-from .mp import create_payment_preference
-from django.contrib import messages
-
 from product.models import Variation, Product
+from django.views.generic import DetailView
+from .mp import create_payment_preference
+from django.shortcuts import redirect
 from .models import Order, OrderItem
-
-
+from django.contrib import messages
+from django.views import View
+from .models import Order
 from utils import utils
 
 

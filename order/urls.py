@@ -10,5 +10,4 @@ urlpatterns = [
     path('detail/<int:pk>', views.Detail.as_view(), name='detail'),
     path('success/<int:pk>', views.Success.as_view(), name='success'),
     path('failure/<int:pk>', views.Failure.as_view(), name='failure'),
-
 ]
