@@ -9,6 +9,9 @@ from django.contrib import messages
 from django.views import View
 from .models import Order
 from utils import utils
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 class DispatchLoginRequiredMixin(View):
@@ -22,6 +25,17 @@ class DispatchLoginRequiredMixin(View):
         qs = super().get_queryset(*args, **kwargs)
         qs = qs.filter(user=self.request.user)
         return qs
+
+
+@csrf_exempt
+def mp_webhook(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        if 'type' in data and data['type'] == 'payment':
+            # Insira a lógica de verificação e atualização do pedido aqui
+            return JsonResponse({"status": "received"}, status=200)
+        return JsonResponse({"status": "invalid"}, status=400)
+    return JsonResponse({"status": "invalid method"}, status=400)
 
 
 class Success(DetailView):
