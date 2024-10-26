@@ -31,19 +31,39 @@ class DispatchLoginRequiredMixin(View):
 @csrf_exempt
 def mp_webhook(request):
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        if 'type' in data and data['type'] == 'payment':
-            payment_id = data['data']['id']
+        try:
+            # Tenta carregar o corpo da requisição
+            data = json.loads(request.body.decode('utf-8'))
 
-            sdk = mercadopago.SDK(
-                "APP_USR-7583888755221388-080319-687eb0d4ca445458928fe2cc798b0245-547624382")
-            payment = sdk.payment().get(payment_id)
-            payment_status = payment['response']['status']
+            # Verifica se o tipo é "payment"
+            if 'type' in data and data['type'] == 'payment':
+                payment_id = data['data']['id']
 
-            if payment_status == 'approved':
-                return JsonResponse({"status": "payment approved"}, status=200)
-            else:
-                return JsonResponse({"status": "payment not approved"}, status=200)
+                # Inicializa o SDK do Mercado Pago
+                sdk = mercadopago.SDK(
+                    "APP_USR-7583888755221388-080319-687eb0d4ca445458928fe2cc798b0245-547624382"
+                )
+
+                # Obtém o status do pagamento
+                payment = sdk.payment().get(payment_id)
+
+                # Verifica se a resposta contém a chave 'response'
+                if 'response' in payment:
+                    payment_status = payment['response']['status']
+
+                    if payment_status == 'approved':
+                        return JsonResponse({"status": "payment approved"}, status=200)
+                    else:
+                        return JsonResponse({"status": "payment not approved"}, status=200)
+
+                return JsonResponse({"status": "payment not found"}, status=404)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "invalid json"}, status=400)
+        except Exception as e:
+            # Log do erro para depuração
+            print(f"Erro: {str(e)}")
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "invalid method"}, status=400)
 
