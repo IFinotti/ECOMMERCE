@@ -31,40 +31,6 @@ class DispatchLoginRequiredMixin(View):
         return qs
 
 
-@csrf_exempt
-def mp_webhook(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body.decode('utf-8'))
-
-            if 'type' in data and data['type'] == 'payment':
-                payment_id = data['data']['id']
-
-                sdk = mercadopago.SDK(os.getenv("MERCADO_PAGO_ACCESS_TOKEN"))
-
-                payment = sdk.payment().get(payment_id)
-
-                if payment.get('response'):
-                    payment_status = payment['response'].get(
-                        'status', 'unknown')
-
-                    if payment_status == 'approved':
-                        return JsonResponse({"status": "payment approved"}, status=200)
-                    else:
-                        return JsonResponse({"status": "payment not approved"}, status=200)
-
-                return JsonResponse({"status": "payment not found"}, status=404)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"status": "invalid json"}, status=400)
-        except Exception as e:
-            # Log do erro para depuração
-            print(f"Erro: {str(e)}")
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-    return JsonResponse({"status": "invalid method"}, status=400)
-
-
 class Success(DetailView):
     # template_name = 'order/success.html'
     model = Order
