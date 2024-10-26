@@ -34,45 +34,21 @@ class DispatchLoginRequiredMixin(View):
 @csrf_exempt
 def mp_webhook(request):
     if request.method == 'POST':
-        x_signature = request.headers.get("x-signature")
-        x_request_id = request.headers.get("x-request-id")
-
         try:
-            # Tenta carregar o corpo da requisição
             data = json.loads(request.body.decode('utf-8'))
 
-            # Verifica se o tipo é "payment"
             if 'type' in data and data['type'] == 'payment':
                 payment_id = data['data']['id']
 
-                # Cria a string para validar a assinatura
-                ts = x_signature.split(',')[0].split('=')[1]
-                manifest = f"id:{payment_id};request-id:{x_request_id};ts:{ts};"
-
-                # Gera a assinatura usando HMAC
-                expected_signature = hmac.new(
-                    os.getenv("MERCADO_PAGO_SECRET").encode(),
-                    msg=manifest.encode(),
-                    digestmod=hashlib.sha256
-                ).hexdigest()
-
-                # Verifica a assinatura
-                if expected_signature != x_signature.split(',')[1].split('=')[1]:
-                    return JsonResponse({"status": "invalid signature"}, status=400)
-
-                # Inicializa o SDK do Mercado Pago com token de ambiente
                 sdk = mercadopago.SDK(os.getenv("MERCADO_PAGO_ACCESS_TOKEN"))
 
-                # Obtém o status do pagamento
                 payment = sdk.payment().get(payment_id)
 
-                # Verifica se a resposta contém a chave 'response'
                 if payment.get('response'):
                     payment_status = payment['response'].get(
                         'status', 'unknown')
 
                     if payment_status == 'approved':
-                        # Aqui você pode realizar a lógica para um pagamento aprovado
                         return JsonResponse({"status": "payment approved"}, status=200)
                     else:
                         return JsonResponse({"status": "payment not approved"}, status=200)
