@@ -17,8 +17,7 @@ def webhook(request):
         data = json.loads(request.body)
 
         # Assinatura secreta gerada no Mercado Pago
-        secret = "sua_assinatura_secreta_aqui"
-
+        secret = "E9TxX34klUd15W8KYzmOm7fXaOZ5ajwK"
         # Criação do template
         template = f"id:{data['data']['id']};request-id:{x_request_id};ts:{data['date_created']};"
 
