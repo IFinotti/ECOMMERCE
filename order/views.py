@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.views import View
 from .models import Order
 from utils import utils
+import mercadopago
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -32,9 +33,18 @@ def mp_webhook(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         if 'type' in data and data['type'] == 'payment':
-            # Insira a lógica de verificação e atualização do pedido aqui
-            return JsonResponse({"status": "received"}, status=200)
-        return JsonResponse({"status": "invalid"}, status=400)
+            payment_id = data['data']['id']
+
+            sdk = mercadopago.SDK(
+                "APP_USR-7583888755221388-080319-687eb0d4ca445458928fe2cc798b0245-547624382")
+            payment = sdk.payment().get(payment_id)
+            payment_status = payment['response']['status']
+
+            if payment_status == 'approved':
+                return JsonResponse({"status": "payment approved"}, status=200)
+            else:
+                return JsonResponse({"status": "payment not approved"}, status=200)
+
     return JsonResponse({"status": "invalid method"}, status=400)
 
 
