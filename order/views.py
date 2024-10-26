@@ -11,6 +11,7 @@ from .models import Order
 from utils import utils
 import mercadopago
 import json
+import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -39,17 +40,16 @@ def mp_webhook(request):
             if 'type' in data and data['type'] == 'payment':
                 payment_id = data['data']['id']
 
-                # Inicializa o SDK do Mercado Pago
-                sdk = mercadopago.SDK(
-                    "APP_USR-7583888755221388-080319-687eb0d4ca445458928fe2cc798b0245-547624382"
-                )
+                # Inicializa o SDK do Mercado Pago com token de ambiente
+                sdk = mercadopago.SDK(os.getenv("MERCADO_PAGO_ACCESS_TOKEN"))
 
                 # Obtém o status do pagamento
                 payment = sdk.payment().get(payment_id)
 
                 # Verifica se a resposta contém a chave 'response'
-                if 'response' in payment:
-                    payment_status = payment['response']['status']
+                if payment.get('response'):
+                    payment_status = payment['response'].get(
+                        'status', 'unknown')
 
                     if payment_status == 'approved':
                         return JsonResponse({"status": "payment approved"}, status=200)
