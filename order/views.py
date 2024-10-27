@@ -9,6 +9,9 @@ from django.contrib import messages
 from django.views import View
 from .models import Order
 from utils import utils
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 class DispatchLoginRequiredMixin(View):
@@ -22,6 +25,30 @@ class DispatchLoginRequiredMixin(View):
         qs = super().get_queryset(*args, **kwargs)
         qs = qs.filter(user=self.request.user)
         return qs
+
+
+@csrf_exempt
+def mercado_pago_webhook(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            # Captura o ID do pagamento e o tipo de notificação
+            payment_id = data.get("data", {}).get("id")
+            notification_type = data.get("type")
+
+            # Faça uma verificação do tipo de notificação
+            if notification_type == "payment":
+                # Aqui você pode chamar uma função para processar o pagamento, por exemplo:
+                # process_payment(payment_id)
+                print(f"Pagamento recebido com ID: {payment_id}")
+
+            # Retorne uma resposta de sucesso para confirmar o recebimento do webhook
+            return JsonResponse({"status": "success"}, status=200)
+
+        except Exception as e:
+            print(f"Erro ao processar webhook: {e}")
+            return JsonResponse({"status": "error"}, status=400)
+    return JsonResponse({"status": "method not allowed"}, status=405)
 
 
 class Success(DetailView):

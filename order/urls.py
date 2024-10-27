@@ -9,6 +9,8 @@ urlpatterns = [
     path('list/', views.List.as_view(), name='list'),
     path('detail/<int:pk>', views.Detail.as_view(), name='detail'),
     path('success/<int:pk>', views.Success.as_view(), name='success'),
+    path('mercadopago/webhook/', views.mercado_pago_webhook,
+         name='mercado_pago_webhook'),
     path('failure/<int:pk>', views.Failure.as_view(), name='failure'),
 
 ]
