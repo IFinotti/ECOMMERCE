@@ -9,13 +9,6 @@ from django.contrib import messages
 from django.views import View
 from .models import Order
 from utils import utils
-import mercadopago
-import json
-import os
-import hmac
-import hashlib
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 
 class DispatchLoginRequiredMixin(View):
